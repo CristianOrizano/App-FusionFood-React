@@ -1,5 +1,7 @@
 export default interface FoodRequest {
 	descripcion: string;
-	idCategoria: number | null;
+	nombre: string;
+	nombreImg?: string;
+	idCategoria: number;
 	precio: number;
 }

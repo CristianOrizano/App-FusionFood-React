@@ -13,6 +13,8 @@ import { RECORD_STATUS } from '@/core/helpers/RecordStateHelper';
 import { ESTADO_DESHABILITAR, ESTADO_HABILITAR } from '@/core/constantes';
 import { showAlertCondition } from '@/core/helpers/SwalHelper';
 import useCategoriaDeleteById from '../application/useCategoriaDeleteById';
+import upload from '@/core/imagenes/upload.jpg';
+import ModalPhotoSave, { ModalPhotoSaveRef } from './components/ModalPhotSave';
 
 interface CategoriaFilterFormik extends CategoriaFilter {
 	recordState: RecordState | null;
@@ -84,7 +86,7 @@ const index = () => {
 	};
 
 	const modalRef = createRef<ModalSaveCategoriaRef>();
-
+	const modalPhotoRef = createRef<ModalPhotoSaveRef>();
 	//definir-columnas
 	const columnHelper = createColumnHelper<CategoriaResponse>();
 
@@ -100,6 +102,17 @@ const index = () => {
 		columnHelper.accessor('descripcion', {
 			header: 'Descripción',
 			cell: info => info.getValue(),
+		}),
+		columnHelper.display({
+			id: 'Imagen',
+			header: () => <span className="d-block text-center text-nowrap">Imagen</span>,
+			cell: ({ row }) => {
+				return (
+					<div className="text-center">
+						<img src={row.original.imgFire || upload} style={{ width: '50px', height: '50px' }} />
+					</div>
+				);
+			},
 		}),
 		columnHelper.accessor('estado', {
 			header: 'Estado',
@@ -120,11 +133,18 @@ const index = () => {
 					<span className="d-flex align-items-center justify-content-center">
 						<button
 							type="button"
-							className="btn btn-info mx-2"
+							className="btn btn-secondary mx-2"
 							onClick={() => modalRef.current?.openModal(row.original.id)}
 						>
-							edit
-						</button>{' '}
+							<i className="fa-solid fa-pen-to-square"></i>
+						</button>
+						<button
+							type="button"
+							className="btn btn-info  mx-2"
+							onClick={() => modalPhotoRef.current?.openModal(row.original.id)}
+						>
+							<i className="fa-solid fa-image"></i>
+						</button>
 						<Form.Check
 							type="switch"
 							label=""
@@ -267,7 +287,7 @@ const index = () => {
 					</div>
 				</div>
 			</div>
-
+			<ModalPhotoSave ref={modalPhotoRef} />
 			<ModalSaveCategoria ref={modalRef} />
 		</>
 	);

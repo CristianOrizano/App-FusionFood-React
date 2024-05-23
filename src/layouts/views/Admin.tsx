@@ -7,15 +7,17 @@ import { Container } from 'react-bootstrap';
 const Admin = () => {
 	return (
 		<>
-			<Siderbar />
-			<div className="main">
-				<Navbar />
-				<main className="content">
-					<Container fluid>
-						<Outlet />
-					</Container>
-				</main>
-				<Footer />
+			<div className="wrapper">
+				<Siderbar />
+				<div className="main">
+					<Navbar />
+					<main className="content">
+						<Container fluid>
+							<Outlet />
+						</Container>
+					</main>
+					<Footer />
+				</div>
 			</div>
 		</>
 	);

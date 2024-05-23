@@ -1,7 +1,7 @@
 import { FilterPage, PaginationRequest } from '@/modules/shared/domain';
 import { MouseEvent, createRef, useState } from 'react';
 import { FoodFilter, FoodResponse } from '../domain';
-import { CategoriaFilter } from '../../categorias/domain';
+
 import { useFormik } from 'formik';
 import { useFoodDeleteById, useFoodPaginatedSearch } from '../application';
 import { ESTADO_DESHABILITAR, ESTADO_HABILITAR } from '@/core/constantes';
@@ -13,26 +13,33 @@ import LoadingTable from '@/core/components/loading/LoadingTable';
 import { TableCoreSelectPaginated } from '@/core/components/table';
 import { useCategoriaListSimple } from '../../categorias/application';
 import Select from 'react-select';
+import ModalPhotoSave, { ModalPhotoSaveRef } from './components/ModalPhotoSave';
 
-interface PropsFilter {
-	value: number | string;
-	label: string;
-}
+import upload from '@/core/imagenes/upload.jpg';
+import PaginationLinks from '@/core/components/table/PaginationLinks';
 
 const index = () => {
+	// Hooks
+
 	const [searchFilter, setSearchFilter] = useState<PaginationRequest<FoodFilter>>({
 		page: 1,
 		perPage: 10,
 		filter: {
 			precio: 0,
 			descripcion: '',
+			nombre: '',
 			idCategoria: 0,
 		},
 	});
-
+	const { data: dataCategoria, isFetching: isFetchingCategoria } = useCategoriaListSimple();
+	const { mutateAsync: mutateAsyncDelete } = useFoodDeleteById();
+	const { data: docData, isFetching: isFetchingFood } = useFoodPaginatedSearch(searchFilter);
+	//---
+	//formik
 	const formik = useFormik<FoodFilter>({
 		initialValues: {
 			descripcion: '',
+			nombre: '',
 			//precio: 0,
 			idCategoria: 0,
 		},
@@ -42,6 +49,7 @@ const index = () => {
 					...prev,
 					page: 1,
 					filter: {
+						nombre: values.nombre,
 						descripcion: values.descripcion,
 						precio: values.precio,
 						idCategoria: values.idCategoria,
@@ -60,10 +68,6 @@ const index = () => {
 		});
 	};
 
-	// Hooks
-	const { data: docData, isFetching: isFetchingFood } = useFoodPaginatedSearch(searchFilter);
-	const { data: dataCategoria, isFetching: isFetchingCategoria } = useCategoriaListSimple();
-	const { mutateAsync: mutateAsyncDelete } = useFoodDeleteById();
 	// _____
 
 	//combos
@@ -89,6 +93,7 @@ const index = () => {
 	};
 
 	const modalRef = createRef<ModalSaveFoodRef>();
+	const modalPhotoRef = createRef<ModalPhotoSaveRef>();
 
 	//definir-columnas
 	const columnHelper = createColumnHelper<FoodResponse>();
@@ -96,6 +101,10 @@ const index = () => {
 	const columns = [
 		columnHelper.accessor('id', {
 			header: 'ID',
+			cell: info => info.getValue(),
+		}),
+		columnHelper.accessor('nombre', {
+			header: 'Nombre',
 			cell: info => info.getValue(),
 		}),
 		columnHelper.accessor('descripcion', {
@@ -110,9 +119,23 @@ const index = () => {
 			header: 'Categoria',
 			cell: info => info.getValue(),
 		}),
+		columnHelper.display({
+			id: 'Imagen',
+			header: () => <span className="d-block text-center text-nowrap">Imagen</span>,
+			cell: ({ row }) => {
+				return (
+					<div className="text-center">
+						<img src={row.original.imgFire || upload} style={{ width: '50px', height: '50px' }} />
+					</div>
+				);
+			},
+		}),
 
 		columnHelper.accessor('estado', {
-			header: 'Estado',
+			header: () => (
+				// Utilizamos una función para retornar el encabezado
+				<div className="text-center">Estado</div> // El encabezado centrado
+			),
 			cell: ({ row }) => (
 				<div className="text-center">
 					<Badge pill bg={row.original.estado ? 'success' : 'danger'}>
@@ -130,11 +153,18 @@ const index = () => {
 					<span className="d-flex align-items-center justify-content-center">
 						<button
 							type="button"
-							className="btn btn-info mx-2"
+							className="btn btn-info  mx-2"
 							onClick={() => modalRef.current?.openModal(row.original.id)}
 						>
-							edit
-						</button>{' '}
+							<i className="fa-solid fa-pen-to-square"></i>
+						</button>
+						<button
+							type="button"
+							className="btn btn-warning  mx-2"
+							onClick={() => modalPhotoRef.current?.openModal(row.original.id)}
+						>
+							<i className="fa-solid fa-image"></i>
+						</button>
 						<Form.Check
 							type="switch"
 							label=""
@@ -165,8 +195,29 @@ const index = () => {
 					<Accordion defaultActiveKey="0">
 						<Accordion.Item eventKey="0">
 							<Accordion.Header>Filtro de busqueda</Accordion.Header>
+
 							<Accordion.Body>
 								<Row>
+									<div className="d-flex justify-content-end">
+										<div>
+											<button
+												type="button"
+												className="btn btn-outline-dark"
+												onClick={formik.handleReset}
+											>
+												Limpiar
+											</button>{' '}
+											<button
+												type="button"
+												className="btn btn-outline-primary"
+												onClick={() => {
+													formik.handleSubmit();
+												}}
+											>
+												Buscar
+											</button>
+										</div>
+									</div>
 									<Col xs={12} sm={4} md={3}>
 										<Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
 											<Form.Label>Descripcion</Form.Label>
@@ -175,6 +226,21 @@ const index = () => {
 												placeholder="Ingrese Descripcion"
 												name="descripcion"
 												value={formik.values?.descripcion ?? ''}
+												onChange={formik.handleChange}
+												onKeyUp={e => {
+													if (e.key === 'Enter') formik.handleSubmit();
+												}}
+											/>
+										</Form.Group>
+									</Col>
+									<Col xs={12} sm={4} md={3}>
+										<Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+											<Form.Label>Nombre</Form.Label>
+											<Form.Control
+												type="text"
+												placeholder="Ingrese Nombre"
+												name="nombre"
+												value={formik.values?.nombre ?? ''}
 												onChange={formik.handleChange}
 												onKeyUp={e => {
 													if (e.key === 'Enter') formik.handleSubmit();
@@ -249,6 +315,7 @@ const index = () => {
 				</Col>
 			</Row>
 			<ModalSaveFood ref={modalRef} />
+			<ModalPhotoSave ref={modalPhotoRef} />
 		</>
 	);
 };

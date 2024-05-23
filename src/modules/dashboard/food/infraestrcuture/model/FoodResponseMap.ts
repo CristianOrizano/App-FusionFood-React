@@ -3,6 +3,8 @@ import CategoriaListSimple from '@/modules/dashboard/categorias/domain/Categoria
 export default interface FoodResponseMap {
 	id: number;
 	descripcion: string;
+	nombre: string;
+	nombreImg: string;
 	categoria: CategoriaListSimple;
 	precio: number;
 	estado: boolean;

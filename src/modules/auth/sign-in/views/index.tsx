@@ -7,6 +7,7 @@ import useLogin from '../application/useLogin';
 import { LocalStorageSession } from '@/core/sessions';
 import Swal from 'sweetalert2';
 import { AxiosError } from 'axios';
+
 interface DataMessage {
 	Message: string;
 }
@@ -37,7 +38,7 @@ const index = () => {
 			const response: LoginResponse = await mutateAsync(payload);
 
 			LocalStorageSession.saveAuthorization(response);
-			navigate('/dashboard/categoria');
+			navigate('/dashboard');
 		} catch (error) {
 			const err = error as AxiosError;
 			const data = err?.response?.data as DataMessage;

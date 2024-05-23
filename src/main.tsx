@@ -7,11 +7,10 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { AxiosInterceptor } from './core/interceptors';
 
-import '@popperjs/core';
-import 'bootstrap';
-
 import './layouts/views/templates/js/app.js';
-import './layouts/views/templates/scss/app.scss';
+//import './../node_modules/bootstrap/dist/css/bootstrap.min.css';
+// import './layouts/views/templates/scss/app.scss';
+
 AxiosInterceptor();
 
 const queryClient = new QueryClient();

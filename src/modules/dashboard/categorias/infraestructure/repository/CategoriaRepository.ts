@@ -7,22 +7,31 @@ import { CategoriaRequestMap, CategoriaResponseMap } from '../model';
 import { PaginationRequest, PaginationResponse } from '@/modules/shared/domain';
 import { stringify } from 'qs';
 import CategoriaListSimple from '../../domain/CategoriaListSimple';
+import { getPhoto } from '@/core/firebase/config';
 
 export const findAll = async (): Promise<CategoriaResponse[]> => {
 	const response: AxiosResponse<CategoriaResponseMap[]> = await axios.get(
 		`${API_BASE_URL}/api/categoria`,
 	);
-	const categoria: CategoriaResponse[] = response.data.map(item => {
+	const categoriaPromises: Promise<CategoriaResponse>[] = response.data.map(async item => {
 		const categoria: CategoriaResponse = {
 			id: item.id,
 			nombre: item.nombre,
 			descripcion: item.descripcion,
 			estado: item.estado,
 		};
+		if (item.nombreImg != null) {
+			console.log('name>>>', item.nombreImg);
+			categoria.imgFire = await getPhoto(item.nombreImg, 'categoria');
+			console.log('IMGFIRE>>>', categoria.imgFire);
+		}
 		return categoria;
 	});
 
-	return categoria;
+	// Espera a que todas las promesas se resuelvan
+	const categorias: CategoriaResponse[] = await Promise.all(categoriaPromises);
+
+	return categorias;
 };
 
 export const findAllSimple = async (): Promise<CategoriaListSimple[]> => {
@@ -42,6 +51,7 @@ export const findById = async (id: number): Promise<CategoriaResponse> => {
 		id: CategoriaResponseMap.id,
 		nombre: CategoriaResponseMap.nombre,
 		descripcion: CategoriaResponseMap.descripcion,
+		nombreImg: CategoriaResponseMap.nombreImg,
 		estado: CategoriaResponseMap.estado,
 	};
 
@@ -52,6 +62,7 @@ export const create = async (categoria: CategoriaRequest): Promise<CategoriaResp
 	const CategoriaRequestMap: CategoriaRequestMap = {
 		nombre: categoria.nombre,
 		descripcion: categoria.descripcion,
+		nombreImg: categoria.nombreImg,
 	};
 
 	const response: AxiosResponse<CategoriaResponseMap> = await axios.post(
@@ -65,6 +76,7 @@ export const create = async (categoria: CategoriaRequest): Promise<CategoriaResp
 		id: CategoriaResponseMap.id,
 		nombre: CategoriaResponseMap.nombre,
 		descripcion: CategoriaResponseMap.descripcion,
+		nombreImg: CategoriaResponseMap.nombreImg,
 		estado: CategoriaResponseMap.estado,
 	};
 
@@ -78,6 +90,7 @@ export const update = async (
 	const CategoriaRequestMap: CategoriaRequestMap = {
 		nombre: categoria.nombre,
 		descripcion: categoria.descripcion,
+		nombreImg: categoria.nombreImg,
 	};
 
 	const response: AxiosResponse<CategoriaResponseMap> = await axios.put(
@@ -91,6 +104,7 @@ export const update = async (
 		id: CategoriaResponseMap.id,
 		nombre: CategoriaResponseMap.nombre,
 		descripcion: CategoriaResponseMap.descripcion,
+		nombreImg: CategoriaResponseMap.nombreImg,
 		estado: CategoriaResponseMap.estado,
 	};
 
@@ -108,6 +122,7 @@ export const deleteById = async (id: number): Promise<CategoriaResponse> => {
 		id: CategoriaResponseMap.id,
 		nombre: CategoriaResponseMap.nombre,
 		descripcion: CategoriaResponseMap.descripcion,
+		nombreImg: CategoriaResponseMap.nombreImg,
 		estado: CategoriaResponseMap.estado,
 	};
 
@@ -127,15 +142,23 @@ export const paginatedSearch = async (
 
 	const paginationResponse: PaginationResponse<CategoriaResponseMap> = response.data;
 
-	const categorias: CategoriaResponse[] = paginationResponse.data.map(item => {
-		const categoria: CategoriaResponse = {
-			id: item.id,
-			nombre: item.nombre,
-			descripcion: item.descripcion,
-			estado: item.estado,
-		};
-		return categoria;
-	});
+	const categorias: CategoriaResponse[] = await Promise.all(
+		paginationResponse.data.map(async item => {
+			const categoria: CategoriaResponse = {
+				id: item.id,
+				nombre: item.nombre,
+				descripcion: item.descripcion,
+				nombreImg: item.nombreImg,
+				estado: item.estado,
+			};
+			if (item.nombreImg != null) {
+				console.log('name>>>', item.nombreImg);
+				categoria.imgFire = await getPhoto(item.nombreImg, 'categoria');
+				console.log('IMGFIRE>>>', categoria.imgFire);
+			}
+			return categoria;
+		}),
+	);
 
 	const paginationCategoria: PaginationResponse<CategoriaResponse> = {
 		from: paginationResponse.from,

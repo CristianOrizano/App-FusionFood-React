@@ -3,14 +3,56 @@ import { PrivateOutlet } from './CheckPageNavigation';
 
 const routes: RouteObject[] = [
 	{
+		path: '/',
+		async lazy() {
+			const { default: HomeLayout } = await import('../modules/pages/home/index');
+			return { element: <HomeLayout /> };
+		},
+	},
+	{
+		path: '/menu',
+		async lazy() {
+			const { default: MenuLayout } = await import('../modules/pages/menu/view/index');
+			return { element: <MenuLayout /> };
+		},
+	},
+	{
+		path: '/test',
+		async lazy() {
+			const { default: TestLayout } = await import('../modules/pages/test/index');
+			return { element: <TestLayout /> };
+		},
+	},
+	{
+		path: '/menu/:query',
+		async lazy() {
+			const { default: MenuLayout } = await import('../modules/pages/menu/view/index');
+			return { element: <MenuLayout /> };
+		},
+	},
+	{
+		path: '/about',
+		async lazy() {
+			const { default: AboutLayout } = await import('../modules/pages/about/index');
+			return { element: <AboutLayout /> };
+		},
+	},
+	{
 		path: '/dashboard',
 		async lazy() {
-			const { default: AdminLayout } = await import('../layouts/views/Admin');
+			const { default: DashLayout } = await import('../layouts/views/Admin');
 			return {
-				element: <PrivateOutlet>{<AdminLayout />}</PrivateOutlet>,
+				element: <PrivateOutlet>{<DashLayout />}</PrivateOutlet>,
 			};
 		},
 		children: [
+			{
+				index: true,
+				async lazy() {
+					const { default: Home } = await import('../modules/dashboard/home/views/index');
+					return { Component: Home };
+				},
+			},
 			{
 				path: 'categoria',
 				async lazy() {

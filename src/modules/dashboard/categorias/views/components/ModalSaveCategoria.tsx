@@ -47,6 +47,7 @@ const ModalSaveCategoria = forwardRef<ModalSaveCategoriaRef, ModalProps>((_, ref
 			void formik.setValues({
 				nombre: categoria.nombre,
 				descripcion: categoria.descripcion,
+				nombreImg: categoria.nombreImg,
 			});
 	}, [categoria]);
 

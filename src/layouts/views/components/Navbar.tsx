@@ -218,7 +218,7 @@ const Navbar = () => {
 								data-bs-toggle="dropdown"
 							>
 								<img src={avatar} className="avatar img-fluid rounded me-1" alt="Charles Hall" />{' '}
-								<span className="text-dark">Charles Hall</span>
+								<span className="text-dark ">Cristian Orizano</span>
 							</a>
 							<div className="dropdown-menu dropdown-menu-end">
 								<a className="dropdown-item" href="pages-profile.html">

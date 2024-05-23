@@ -23,20 +23,19 @@ const ModalSaveFood = forwardRef<ModalSaveFoodRef, ModalProps>((_, ref) => {
 	const formik = useFormik<FoodRequest>({
 		initialValues: {
 			precio: 0,
+			nombre: '',
 			descripcion: '',
-			idCategoria: null,
+			idCategoria: 0,
 		},
 		validationSchema: Yup.object().shape({
 			precio: Yup.number()
-				.nullable()
 				.required('precio es requerido')
 				.typeError('El precio debe ser un número'),
 			idCategoria: Yup.number()
-				.positive('La categoría debe ser un número positivo')
-				.integer('La categoría debe ser un número entero')
+				.positive('La Categoria es requerido')
 				.required('Categoria es requerido')
 				.typeError('El precio debe ser un número'),
-
+			nombre: Yup.string().trim().nullable().required('Nombre es requerido'),
 			descripcion: Yup.string().trim().nullable().required('Descripcion es requerido'),
 		}),
 		onSubmit: values => {
@@ -50,7 +49,6 @@ const ModalSaveFood = forwardRef<ModalSaveFoodRef, ModalProps>((_, ref) => {
 	const { mutateAsync: mutateAsyncCreate } = useFoodCreate();
 	const { mutateAsync: mutateAsyncEdit } = useFoodUpdate();
 	//____
-
 	//combos
 	const dataCategorias = dataCategoria?.map(option => ({
 		value: option.id,
@@ -58,12 +56,13 @@ const ModalSaveFood = forwardRef<ModalSaveFoodRef, ModalProps>((_, ref) => {
 	}));
 
 	useEffect(() => {
-		// console.log('laboratorio', laboratorio);
 		if (food != null)
 			void formik.setValues({
 				precio: food.precio,
+				nombre: food.nombre,
 				descripcion: food.descripcion,
 				idCategoria: food.categoria.id,
+				nombreImg: food.nombreImg,
 			});
 	}, [food]);
 
@@ -82,8 +81,9 @@ const ModalSaveFood = forwardRef<ModalSaveFoodRef, ModalProps>((_, ref) => {
 
 	const saveCategoria = async (payload: FoodRequest): Promise<void> => {
 		try {
+			console.log('VALORES>>>', payload);
 			if (id != null) {
-				await mutateAsyncEdit({ id, food: payload });
+				await mutateAsyncEdit({ food: payload, id });
 			} else {
 				await mutateAsyncCreate(payload);
 			}
@@ -114,14 +114,27 @@ const ModalSaveFood = forwardRef<ModalSaveFoodRef, ModalProps>((_, ref) => {
 	return (
 		<>
 			<Modal show={show} onHide={closeModal} backdrop="static">
-				<Modal.Header closeButton className="bg-info ">
-					<Modal.Title className="text-white">Categoria</Modal.Title>
+				<Modal.Header closeButton className="bg-danger ">
+					<Modal.Title className="text-white">Food</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
 					{isFetchingFood ? (
 						<LoadingForm />
 					) : (
 						<Row className="g-3">
+							<Col xs={12}>
+								<Form.Label>Nombre</Form.Label>
+								<Form.Control
+									type="text"
+									name="nombre"
+									placeholder="Ingrese Nombre"
+									value={formik.values.nombre ?? ''}
+									onChange={formik.handleChange}
+								/>
+								{(formik.touched.nombre ?? false) && formik.errors.nombre != null && (
+									<small className="text-danger">{formik.errors.nombre}</small>
+								)}
+							</Col>
 							<Col xs={12}>
 								<Form.Label>Descripcion</Form.Label>
 								<Form.Control
@@ -135,6 +148,7 @@ const ModalSaveFood = forwardRef<ModalSaveFoodRef, ModalProps>((_, ref) => {
 									<small className="text-danger">{formik.errors.descripcion}</small>
 								)}
 							</Col>
+
 							<Col xs={12}>
 								<Form.Label>Precio</Form.Label>
 								<Form.Control

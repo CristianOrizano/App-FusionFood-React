@@ -4,6 +4,7 @@ import { FoodRequestMap, FoodResponseMap } from '../model';
 import { API_BASE_URL } from '@/core/constantes/env';
 import { PaginationRequest, PaginationResponse } from '@/modules/shared/domain';
 import { stringify } from 'qs';
+import { getPhoto } from '@/core/firebase/config';
 
 export const findAll = async (): Promise<FoodResponse[]> => {
 	const response: AxiosResponse<FoodResponseMap[]> = await axios.get(
@@ -15,6 +16,8 @@ export const findAll = async (): Promise<FoodResponse[]> => {
 			categoria: item.categoria,
 			precio: item.precio,
 			descripcion: item.descripcion,
+			nombre: item.nombre,
+			nombreImg: item.nombreImg,
 			estado: item.estado,
 		};
 		return food;
@@ -33,7 +36,9 @@ export const findById = async (id: number): Promise<FoodResponse> => {
 		id: FoodResponseMap.id,
 		categoria: FoodResponseMap.categoria,
 		precio: FoodResponseMap.precio,
+		nombre: FoodResponseMap.nombre,
 		descripcion: FoodResponseMap.descripcion,
+		nombreImg: FoodResponseMap.nombreImg,
 		estado: FoodResponseMap.estado,
 	};
 
@@ -44,7 +49,9 @@ export const create = async (food: FoodRequest): Promise<FoodResponse> => {
 	const FoodRequestMap: FoodRequestMap = {
 		idCategoria: food.idCategoria,
 		precio: food.precio,
+		nombre: food.nombre,
 		descripcion: food.descripcion,
+		nombreImg: food.nombreImg,
 	};
 
 	const response: AxiosResponse<FoodResponseMap> = await axios.post(
@@ -58,7 +65,9 @@ export const create = async (food: FoodRequest): Promise<FoodResponse> => {
 		id: FoodResponseMap.id,
 		precio: FoodResponseMap.precio,
 		categoria: FoodResponseMap.categoria,
+		nombre: FoodResponseMap.nombre,
 		descripcion: FoodResponseMap.descripcion,
+		nombreImg: FoodResponseMap.nombreImg,
 		estado: FoodResponseMap.estado,
 	};
 
@@ -69,7 +78,9 @@ export const update = async (id: number, food: FoodRequest): Promise<FoodRespons
 	const FoodRequestMap: FoodRequestMap = {
 		idCategoria: food.idCategoria,
 		precio: food.precio,
+		nombre: food.nombre,
 		descripcion: food.descripcion,
+		nombreImg: food.nombreImg,
 	};
 
 	const response: AxiosResponse<FoodResponseMap> = await axios.put(
@@ -83,7 +94,9 @@ export const update = async (id: number, food: FoodRequest): Promise<FoodRespons
 		id: FoodResponseMap.id,
 		precio: FoodResponseMap.precio,
 		categoria: FoodResponseMap.categoria,
+		nombre: FoodResponseMap.nombre,
 		descripcion: FoodResponseMap.descripcion,
+		nombreImg: FoodResponseMap.nombreImg,
 		estado: FoodResponseMap.estado,
 	};
 
@@ -101,7 +114,9 @@ export const deleteById = async (id: number): Promise<FoodResponse> => {
 		id: FoodResponseMap.id,
 		precio: FoodResponseMap.precio,
 		categoria: FoodResponseMap.categoria,
+		nombre: FoodResponseMap.nombre,
 		descripcion: FoodResponseMap.descripcion,
+		nombreImg: FoodResponseMap.nombreImg,
 		estado: FoodResponseMap.estado,
 	};
 
@@ -121,16 +136,26 @@ export const paginatedSearch = async (
 
 	const paginationResponse: PaginationResponse<FoodResponseMap> = response.data;
 
-	const foods: FoodResponse[] = paginationResponse.data.map(item => {
-		const food: FoodResponse = {
-			id: item.id,
-			categoria: item.categoria,
-			precio: item.precio,
-			descripcion: item.descripcion,
-			estado: item.estado,
-		};
-		return food;
-	});
+	const foods: FoodResponse[] = await Promise.all(
+		paginationResponse.data.map(async item => {
+			const food: FoodResponse = {
+				id: item.id,
+				categoria: item.categoria,
+				precio: item.precio,
+				nombre: item.nombre,
+				descripcion: item.descripcion,
+				nombreImg: item.nombreImg,
+				estado: item.estado,
+			};
+			if (item.nombreImg != null) {
+				console.log('name>>>', item.nombreImg);
+				food.imgFire = await getPhoto(item.nombreImg, 'food');
+				console.log('IMGFIRE>>>', food.imgFire);
+			}
+
+			return food;
+		}),
+	);
 
 	const paginationCategoria: PaginationResponse<FoodResponse> = {
 		from: paginationResponse.from,
