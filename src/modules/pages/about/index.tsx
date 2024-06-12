@@ -19,7 +19,7 @@ const index = () => {
 				</section>
 				<div className="container py-5  mb-5">
 					<div className="row align-items-center">
-						<div className="col-sm-12 col-md-6 col-lg-6   ">
+						<div className="col-sm-12 col-md-6 col-lg-6  ">
 							<img
 								className="img-fluid"
 								src={about}
@@ -41,33 +41,32 @@ const index = () => {
 								calidad de los platillos ofrecidos y nuestro compromiso con la sostenibilidad y el
 								apoyo a los negocios locales.
 							</p>
-							<p className="">
-								<strong>Nuestro Valores:</strong>
-								<ul>
-									<li>
-										<strong>Calidad:</strong> Nos comprometemos a ofrecer siempre los mejores y más
-										frescos ingredientes en cada platillo.
-									</li>
-									<li>
-										<strong>Conveniencia:</strong> Facilitamos el proceso de ordenar comida con una
-										plataforma intuitiva y fácil de usar.
-									</li>
-									<li>
-										<strong>Diversidad:</strong> Celebramos la diversidad culinaria ofreciendo una
-										amplia gama de opciones para satisfacer todos los gustos y preferencias
-										dietéticas.
-									</li>
-									<li>
-										<strong>Sostenibilidad:</strong> Promovemos prácticas sostenibles y apoyamos a
-										restaurantes que comparten nuestros valores ecológicos.
-									</li>
-								</ul>
-							</p>
+
+							<strong>Nuestro Valores:</strong>
+							<ul>
+								<li>
+									<strong>Calidad:</strong> Nos comprometemos a ofrecer siempre los mejores y más
+									frescos ingredientes en cada platillo.
+								</li>
+								<li>
+									<strong>Conveniencia:</strong> Facilitamos el proceso de ordenar comida con una
+									plataforma intuitiva y fácil de usar.
+								</li>
+								<li>
+									<strong>Diversidad:</strong> Celebramos la diversidad culinaria ofreciendo una
+									amplia gama de opciones para satisfacer todos los gustos y preferencias
+									dietéticas.
+								</li>
+								<li>
+									<strong>Sostenibilidad:</strong> Promovemos prácticas sostenibles y apoyamos a
+									restaurantes que comparten nuestros valores ecológicos.
+								</li>
+							</ul>
 						</div>
 					</div>
 				</div>
+				<FooterPage />
 			</main>
-			<FooterPage />
 		</>
 	);
 };

@@ -3,5 +3,6 @@ export default interface CategoriaResponseMap {
 	nombre: string;
 	descripcion: string;
 	nombreImg?: string;
+	imgFire?: string;
 	estado: boolean;
 }

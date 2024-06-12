@@ -7,8 +7,6 @@ import {
 	ref,
 	uploadBytes,
 } from 'firebase/storage';
-import Swal from 'sweetalert2';
-import { v4 } from 'uuid';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {

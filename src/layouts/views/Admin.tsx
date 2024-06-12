@@ -3,7 +3,7 @@ import Siderbar from './components/Siderbar';
 import Footer from './components/Footer';
 import { Outlet } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
-
+import './demo/nav.css';
 const Admin = () => {
 	return (
 		<>

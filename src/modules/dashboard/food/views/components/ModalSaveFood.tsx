@@ -67,9 +67,9 @@ const ModalSaveFood = forwardRef<ModalSaveFoodRef, ModalProps>((_, ref) => {
 	}, [food]);
 
 	// Methods
-	const openModal = (id?: number): void => {
+	const openModal = (idd?: number): void => {
 		setShow(true);
-		setId(id);
+		setId(idd);
 		// console.log('id', id);
 	};
 

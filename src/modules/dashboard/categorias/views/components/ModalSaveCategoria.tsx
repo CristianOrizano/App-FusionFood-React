@@ -1,6 +1,6 @@
 import { useFormik } from 'formik';
 import { ReactNode, forwardRef, useEffect, useImperativeHandle, useState } from 'react';
-import { CategoriaRequest } from '../../domain';
+import { CategoriaRequest, CategoriaResponse } from '../../domain';
 import * as Yup from 'yup';
 import { useCategoriaCreate, useCategoriaFindById, useCategoriaUpdate } from '../../application';
 import Swal from 'sweetalert2';
@@ -12,7 +12,8 @@ interface ModalProps {
 }
 
 export interface ModalSaveCategoriaRef {
-	openModal: (id?: number) => void;
+	// openModal: (id?: number) => void;
+	openModal: (data?: CategoriaResponse) => void;
 	closeModal?: () => void;
 }
 
@@ -20,12 +21,14 @@ const ModalSaveCategoria = forwardRef<ModalSaveCategoriaRef, ModalProps>((_, ref
 	// Attributes
 	const [show, setShow] = useState<boolean>(false);
 	const [id, setId] = useState<number>();
+	//demo
+	const [dataCategoria, setDataCategoria] = useState<CategoriaResponse>();
 
 	//form - modal
 	const formik = useFormik<CategoriaRequest>({
 		initialValues: {
-			nombre: '',
-			descripcion: '',
+			nombre: dataCategoria?.nombre ?? '',
+			descripcion: dataCategoria?.descripcion ?? '',
 		},
 		validationSchema: Yup.object().shape({
 			nombre: Yup.string().trim().nullable().required('Nombre es requerido'),
@@ -42,25 +45,29 @@ const ModalSaveCategoria = forwardRef<ModalSaveCategoriaRef, ModalProps>((_, ref
 	const { mutateAsync: mutateAsyncEdit } = useCategoriaUpdate();
 
 	useEffect(() => {
-		// console.log('laboratorio', laboratorio);
-		if (categoria != null)
+		console.log('alcargar>>>');
+		if (dataCategoria != null) {
+			console.log('DATACATE>>>', dataCategoria);
 			void formik.setValues({
-				nombre: categoria.nombre,
-				descripcion: categoria.descripcion,
-				nombreImg: categoria.nombreImg,
+				nombre: dataCategoria.nombre,
+				descripcion: dataCategoria.descripcion,
+				nombreImg: dataCategoria.nombreImg,
 			});
-	}, [categoria]);
+		}
+	}, [dataCategoria]);
 
 	// Methods
-	const openModal = (id?: number): void => {
+	const openModal = (data?: CategoriaResponse): void => {
 		setShow(true);
-		setId(id);
+		setId(data?.id);
+		setDataCategoria(data);
 		// console.log('id', id);
 	};
 
 	const closeModal = (): void => {
 		setShow(false);
 		setId(undefined);
+		setDataCategoria(undefined);
 		formik.resetForm();
 	};
 
@@ -99,7 +106,7 @@ const ModalSaveCategoria = forwardRef<ModalSaveCategoriaRef, ModalProps>((_, ref
 		<>
 			<Modal show={show} onHide={closeModal} backdrop="static">
 				<Modal.Header closeButton className="bg-info ">
-					<Modal.Title className="text-white">Categoria</Modal.Title>
+					<Modal.Title className="text-white">Categoria </Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
 					{isFetchingCategoria ? (

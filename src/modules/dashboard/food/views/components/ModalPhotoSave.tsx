@@ -95,11 +95,9 @@ const ModalPhotoSave = forwardRef<ModalPhotoSaveRef, ModalProps>((_, ref) => {
 	};
 
 	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		console.log('Target ', e);
-
 		const file = e.target.files?.[0];
 		setSelectedFile(file);
-		console.log('File ', file);
+
 		if (file) {
 			setIsImageSelected(true);
 			if (file.type === 'image/png' || file.type === 'image/jpeg') {

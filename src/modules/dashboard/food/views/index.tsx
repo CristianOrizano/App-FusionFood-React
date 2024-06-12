@@ -16,7 +16,6 @@ import Select from 'react-select';
 import ModalPhotoSave, { ModalPhotoSaveRef } from './components/ModalPhotoSave';
 
 import upload from '@/core/imagenes/upload.jpg';
-import PaginationLinks from '@/core/components/table/PaginationLinks';
 
 const index = () => {
 	// Hooks

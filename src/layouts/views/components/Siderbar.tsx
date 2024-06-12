@@ -1,4 +1,4 @@
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import logo from '../../../core/imagenes/logoDash.png';
 import fire from '../../../core/imagenes/flame.png';
 const Siderbar = () => {
@@ -17,54 +17,70 @@ const Siderbar = () => {
 					<ul className="sidebar-nav">
 						<li className="sidebar-header">Dashboard</li>
 
-						<li className={`sidebar-item ${location.pathname === '/dashboard' ? 'active' : ''}`}>
-							<Link className="sidebar-link" to="">
+						<NavLink
+							className={({ isActive }) => `sidebar-item ${isActive ? 'active' : ''}`}
+							to="/dashboard"
+							end
+						>
+							<span className="sidebar-link">
 								<i className="fa-solid fa-house"></i>
 								<span className="align-middle">Home</span>
-							</Link>
-						</li>
+							</span>
+						</NavLink>
+
 						<li className="sidebar-header">Mantenimiento</li>
 
-						<li
-							className={`sidebar-item ${location.pathname === '/dashboard/categoria' ? 'active' : ''}`}
+						<NavLink
+							className={({ isActive }) => `nav-link sidebar-item ${isActive ? 'active' : ''}`}
+							to="/dashboard/categoria"
 						>
-							<Link className="sidebar-link" to="categoria">
-								<i className="fa-light fa-tags"></i>
+							<span className="sidebar-link">
+								<i className="bi bi-tags"></i>
 								<span className="align-middle">Categoria</span>
-							</Link>
-						</li>
+							</span>
+						</NavLink>
 
-						<li
-							className={`sidebar-item ${location.pathname === '/dashboard/foodmenu' ? 'active' : ''}`}
+						<NavLink
+							className={({ isActive }) => `nav-link sidebar-item ${isActive ? 'active' : ''}`}
+							to="/dashboard/foodmenu"
 						>
-							<Link className="sidebar-link" to="foodmenu">
-								<i className="fa-light fa-utensils"></i>
+							<span className="sidebar-link">
+								<i className="bi bi-egg-fried"></i>
 								<span className="align-middle">Food</span>
-							</Link>
-						</li>
+							</span>
+						</NavLink>
 
-						<li className="sidebar-item">
-							<a className="sidebar-link" href="#">
-								<i className="fa-light fa-user"></i>
-								<span className="align-middle">Usuarios</span>
-							</a>
-						</li>
+						<NavLink
+							className={({ isActive }) => `nav-link sidebar-item ${isActive ? 'active' : ''}`}
+							to="/dashboard/usuario"
+						>
+							<span className="sidebar-link">
+								<i className="bi bi-person"></i>
+								<span className="align-middle">Usuario</span>
+							</span>
+						</NavLink>
 
-						<li className="sidebar-item">
-							<a className="sidebar-link" href="#">
-								<i className="fa-light fa-people-group"></i>
-								<span className="align-middle">Clientes</span>
-							</a>
-						</li>
+						<NavLink
+							className={({ isActive }) => `nav-link sidebar-item ${isActive ? 'active' : ''}`}
+							to="/dashboard/cliente"
+						>
+							<span className="sidebar-link">
+								<i className="bi bi-people"></i>
+								<span className="align-middle">Cliente</span>
+							</span>
+						</NavLink>
 
 						<li className="sidebar-header">Pedidos</li>
 
-						<li className="sidebar-item">
-							<a className="sidebar-link" href="#">
-								<i className="fa-light fa-burger"></i>
+						<NavLink
+							className={({ isActive }) => `nav-link sidebar-item ${isActive ? 'active' : ''}`}
+							to="/dashboard/ordenes"
+						>
+							<span className="sidebar-link">
+								<i className="bi bi-backpack4"></i>
 								<span className="align-middle">Ordenes</span>
-							</a>
-						</li>
+							</span>
+						</NavLink>
 
 						<li className="sidebar-item">
 							<a className="sidebar-link" href="#">

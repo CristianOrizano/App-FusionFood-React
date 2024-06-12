@@ -230,8 +230,70 @@ const index = () => {
 					</div>
 				</div>
 			</div>
+			<div className="btn-group">
+				<button
+					type="button"
+					className="btn btn-danger dropdown-toggle"
+					data-bs-toggle="dropdown"
+					aria-expanded="false"
+				>
+					Action
+				</button>
+				<ul className="dropdown-menu">
+					<li>
+						<a className="dropdown-item" href="#">
+							Action
+						</a>
+					</li>
+					<li>
+						<a className="dropdown-item" href="#">
+							Another action
+						</a>
+					</li>
+					<li>
+						<a className="dropdown-item" href="#">
+							Something else here
+						</a>
+					</li>
 
+					<li>
+						<a className="dropdown-item" href="#">
+							Separated link
+						</a>
+					</li>
+				</ul>
+			</div>
 			<h2>hola mundo</h2>
+			<div className="d-flex  align-items-center ">
+				<p className=" m-0">fgdf </p>
+				<div className="btn-group">
+					<a
+						type="button"
+						className="btn btn-danger dropdown-toggle"
+						data-bs-toggle="dropdown"
+						aria-expanded="false"
+					>
+						<i className=" bi bi-person-circle fs-4  ms-2"></i>
+					</a>
+					<ul className="dropdown-menu">
+						<li>
+							<a className="dropdown-item" href="#">
+								Action
+							</a>
+						</li>
+						<li>
+							<a className="dropdown-item" href="#">
+								Another action
+							</a>
+						</li>
+						<li>
+							<a className="dropdown-item" href="#">
+								Something else here
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
 		</>
 	);
 };

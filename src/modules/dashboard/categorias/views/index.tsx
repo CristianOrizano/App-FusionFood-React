@@ -134,7 +134,7 @@ const index = () => {
 						<button
 							type="button"
 							className="btn btn-secondary mx-2"
-							onClick={() => modalRef.current?.openModal(row.original.id)}
+							onClick={() => modalRef.current?.openModal(row.original)}
 						>
 							<i className="fa-solid fa-pen-to-square"></i>
 						</button>

@@ -27,12 +27,38 @@ export const findAll = async (): Promise<CategoriaResponse[]> => {
 		}
 		return categoria;
 	});
-
 	// Espera a que todas las promesas se resuelvan
 	const categorias: CategoriaResponse[] = await Promise.all(categoriaPromises);
 
 	return categorias;
 };
+
+/*
+export const findAll = async (): Promise<CategoriaResponse[]> => {
+	const response: AxiosResponse<CategoriaResponseMap[]> = await axios.get(
+		`${API_BASE_URL}/api/categoria`,
+	);
+	const categoriaPromises: Promise<CategoriaResponse>[] = response.data.map(async item => {
+		const categoria: CategoriaResponse = {
+			id: item.id,
+			nombre: item.nombre,
+			descripcion: item.descripcion,
+			estado: item.estado,
+		};
+		if (item.nombreImg != null) {
+			console.log('name>>>', item.nombreImg);
+			categoria.imgFire = await getPhoto(item.nombreImg, 'categoria');
+			console.log('IMGFIRE>>>', categoria.imgFire);
+		}
+		return categoria;
+	});
+	// Espera a que todas las promesas se resuelvan
+	const categorias: CategoriaResponse[] = await Promise.all(categoriaPromises);
+
+	return categorias;
+};
+
+*/
 
 export const findAllSimple = async (): Promise<CategoriaListSimple[]> => {
 	const response: AxiosResponse<CategoriaListSimple[]> = await axios.get(

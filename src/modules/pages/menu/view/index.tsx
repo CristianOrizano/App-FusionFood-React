@@ -1,6 +1,6 @@
 import NavbarPage from '@/modules/shared/navbar/NavbarPage';
-import '../../../../layouts/views/static/css/theme.min2.css';
 
+import '../../../../layouts/views/static/css/theme.min2.css';
 import bannercategoria from '../../../../core/imagenes/fondocategoria.jpg';
 import categoria from '../../../../core/imagenes/category/01.jpg';
 import nodisponible from '../../../../core/imagenes/nodisponible.png';
@@ -10,9 +10,9 @@ import {
 	useCategoriaFindById,
 } from '@/modules/dashboard/categorias/application';
 import { useFoodPaginatedSearch } from '@/modules/dashboard/food/application';
-import { useEffect, useState } from 'react';
+import { createRef, useEffect, useState } from 'react';
 import { FilterPage, PaginationRequest } from '@/modules/shared/domain';
-import { FoodFilter } from '@/modules/dashboard/food/domain';
+import { FoodCar, FoodFilter, FoodResponse } from '@/modules/dashboard/food/domain';
 
 import PaginationLinksProducts from '@/core/components/table/PaginationLinksProducts';
 import { FormSelect } from 'react-bootstrap';
@@ -20,6 +20,10 @@ import { useNavigate, useParams } from 'react-router';
 import LoadingCategoria from '@/core/components/loading/LoadingCategoria';
 import LoadingFood from '@/core/components/loading/LoadingFood';
 import FooterPage from '@/modules/shared/navbar/FooterPage';
+import ModalFood, { ModalFoodRef } from '../components/ModalFood';
+import { useCart } from '@/modules/dashboard/food/application/useCar';
+
+import { toastSuccess } from '@/core/helpers/ToastHelper';
 
 const index = () => {
 	const navigate = useNavigate();
@@ -47,6 +51,8 @@ const index = () => {
 
 	const [pageSize, setPageSize] = useState<number>(10);
 	const perPageItems: number[] = [20, 30, 40, 50, 100];
+	const { addToCart } = useCart();
+	const modalRef = createRef<ModalFoodRef>();
 
 	const goToPage = (payload: FilterPage): void => {
 		setSearchFilter({
@@ -68,6 +74,7 @@ const index = () => {
 		setId(cod);
 		navigate(`/menu`);
 	};
+
 	const AvanzadoFilter = (tipo: string, order: string): void => {
 		console.log('>>>AVANZADO');
 		console.log('adv', searchFilter);
@@ -90,6 +97,21 @@ const index = () => {
 
 		setSearchFilter(newFilter);
 		navigate(`/menu`);
+	};
+
+	const agregarCarro = (food: FoodResponse) => {
+		const foodcar: FoodCar = {
+			id: food.id,
+			descripcion: food.descripcion,
+			nombre: food.nombre,
+			cantidad: 1,
+			nombreImg: food.nombreImg,
+			imgFire: food.imgFire,
+			precio: food.precio,
+		};
+
+		toastSuccess('Agregado al carrito');
+		addToCart(foodcar);
 	};
 
 	const handleSelectChange = (event: any): void => {
@@ -205,7 +227,7 @@ const index = () => {
 
 				<section className="container tab-content  py-4">
 					<div className="d-md-flex justify-content-between align-items-center">
-						<h4 className="text-center  ">{categoriaNombre}</h4>
+						<h4 className="text-center ">{categoriaNombre}</h4>
 
 						<div className="d-flex justify-content-between align-items-center">
 							<a
@@ -255,7 +277,7 @@ const index = () => {
 						</div>
 					</div>
 
-					<div>
+					<div className="mb-5">
 						{isFetchingFood ? (
 							<LoadingFood />
 						) : (
@@ -275,8 +297,7 @@ const index = () => {
 													<div className="card border pb-2 h-100">
 														<a
 															className="d-flex  h-100 align-items-center"
-															href="#quick-view"
-															data-bs-toggle="modal"
+															onClick={() => modalRef.current?.openModal(item.id)}
 														>
 															<img
 																className="card-img-top my-4"
@@ -294,10 +315,19 @@ const index = () => {
 
 															<div className="d-flex align-items-center justify-content-between mt-4">
 																<div className="product-price">
-																	<span className="text-accent ">S/.{item.precio}</span>
+																	<span className="text-accent ">
+																		{item.precio.toLocaleString('es-PE', {
+																			style: 'currency',
+																			currency: 'PEN',
+																		})}
+																	</span>
 																</div>
-																<button className="btn btn-danger btn-sm" type="button">
-																	+<i className="fa-light fa-cart-shopping fs-4"></i>
+																<button
+																	className="btn btn-danger btn-sm  py-0"
+																	type="button"
+																	onClick={() => agregarCarro(item)}
+																>
+																	+<i className="bi bi-cart3 fs-5 "></i>
 																</button>
 															</div>
 														</div>
@@ -313,9 +343,11 @@ const index = () => {
 							</>
 						)}
 					</div>
+
+					<ModalFood ref={modalRef} />
 				</section>
+				<FooterPage />
 			</main>
-			<FooterPage />
 		</>
 	);
 };
