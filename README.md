@@ -1,10 +1,9 @@
 
-![Captura de pantalla (465)](https://github.com/CristianOrizano/App-FusionFood-React/assets/112443620/352c11d3-c4c3-4d23-983b-62bf949f60db)
-![Captura de pantalla (464)](https://github.com/CristianOrizano/App-FusionFood-React/assets/112443620/670dbd88-c9e7-4c3c-ad4b-3312af7e09d8)
-![Captura de pantalla (466)](https://github.com/CristianOrizano/App-FusionFood-React/assets/112443620/4ea4416b-6309-469d-877a-092c70e2e48b)
 
-
-
+![Captura de pantalla (486)](https://github.com/CristianOrizano/App-FusionFood-React/assets/112443620/2e2bb713-d5a7-407c-b504-a9890a97485d)
+![Captura de pantalla (487)](https://github.com/CristianOrizano/App-FusionFood-React/assets/112443620/27562e6c-83d6-4f69-a559-d2c934e59f22)
+![Captura de pantalla (490)](https://github.com/CristianOrizano/App-FusionFood-React/assets/112443620/e1c18a88-a78a-488e-9fd1-c6db7a12ea4c)
+![Captura de pantalla (491)](https://github.com/CristianOrizano/App-FusionFood-React/assets/112443620/4e18ea01-5da6-4681-9c21-6559640e151f)
 
 
 
