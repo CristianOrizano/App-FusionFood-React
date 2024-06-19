@@ -11,6 +11,7 @@ import { TableCoreSelectPaginated } from '@/core/components/table';
 import DetalleModal, { ModalDetalleRef } from './components/DetalleModal';
 import Select from 'react-select';
 import useEstadoPedidoFindAll from '../application/useEstadoPedidoFindAll';
+import { pdfHojaResumen } from './components/ReporteOrden';
 
 const index = () => {
 	// Hooks
@@ -128,6 +129,14 @@ const index = () => {
 							onClick={() => modalRef.current?.openModal(row.original.id, row.original)}
 						>
 							<i className="fa-solid fa-pen-to-square"></i> Detalle
+						</button>
+						<button
+							type="button"
+							className="btn  mx-2 text-white"
+							style={{ background: '#D4477F' }}
+							onClick={() => pdfHojaResumen(row.original.id, row.original)}
+						>
+							<i className="bi bi-filetype-pdf"></i> Reporte
 						</button>
 					</span>
 				);

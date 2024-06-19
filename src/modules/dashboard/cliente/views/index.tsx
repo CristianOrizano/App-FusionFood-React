@@ -4,10 +4,13 @@ import { FilterPage, PaginationRequest } from '@/modules/shared/domain';
 import { createColumnHelper } from '@tanstack/react-table';
 import { useFormik } from 'formik';
 import perfil from '@/core/imagenes/profile.png';
-import React, { useState } from 'react';
+import React, { MouseEvent, useState } from 'react';
 import { Accordion, Badge, Col, Form, Row } from 'react-bootstrap';
 import LoadingTable from '@/core/components/loading/LoadingTable';
 import { TableCoreSelectPaginated } from '@/core/components/table';
+import { ESTADO_DESHABILITAR, ESTADO_HABILITAR } from '@/core/constantes';
+import { showAlertCondition } from '@/core/helpers/SwalHelper';
+import useClienteDeleteById from '@/modules/pages/login/application/useClienteDeleteById';
 
 const index = () => {
 	// Hooks
@@ -51,6 +54,22 @@ const index = () => {
 			...searchFilter,
 			page: payload.page,
 			perPage: payload.perPage,
+		});
+	};
+
+	const { mutateAsync: mutateAsyncDelete } = useClienteDeleteById();
+	// Methods
+	const removeCliente = async (
+		evt: MouseEvent<HTMLInputElement>,
+		payload: ClienteResponse,
+	): Promise<void> => {
+		evt.preventDefault();
+		const question = `¿Confirmar ${
+			payload.estado === true ? ESTADO_DESHABILITAR : ESTADO_HABILITAR
+		} ${payload.nombres}?`;
+
+		showAlertCondition(question, async () => {
+			await mutateAsyncDelete(payload.id);
 		});
 	};
 
@@ -115,26 +134,12 @@ const index = () => {
 			cell: ({ row }) => {
 				return (
 					<span className="d-flex align-items-center justify-content-center">
-						<button
-							type="button"
-							className="btn btn-info  mx-2"
-							// onClick={() => modalRef.current?.openModal(row.original.id)}
-						>
-							<i className="fa-solid fa-pen-to-square"></i>
-						</button>
-						<button
-							type="button"
-							className="btn btn-warning  mx-2"
-							// onClick={() => modalPhotoRef.current?.openModal(row.original.id)}
-						>
-							<i className="fa-solid fa-image"></i>
-						</button>
 						<Form.Check
 							type="switch"
 							label=""
 							defaultChecked={row.original.estado}
 							onClick={evt => {
-								// void removeFood(evt, row.original);
+								void removeCliente(evt, row.original);
 							}}
 						/>
 					</span>
@@ -179,7 +184,7 @@ const index = () => {
 											<Form.Control
 												type="text"
 												placeholder="Ingrese Nombre"
-												name="nombre"
+												name="nombres"
 												value={formik.values?.nombres ?? ''}
 												onChange={formik.handleChange}
 												onKeyUp={e => {
@@ -194,8 +199,23 @@ const index = () => {
 											<Form.Control
 												type="text"
 												placeholder="Ingrese Apellido"
-												name="apellido"
+												name="apellidos"
 												value={formik.values?.apellidos ?? ''}
+												onChange={formik.handleChange}
+												onKeyUp={e => {
+													if (e.key === 'Enter') formik.handleSubmit();
+												}}
+											/>
+										</Form.Group>
+									</Col>
+									<Col xs={12} sm={4} md={3}>
+										<Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+											<Form.Label>Correo</Form.Label>
+											<Form.Control
+												type="text"
+												placeholder="Ingrese Correo"
+												name="correo"
+												value={formik.values?.correo ?? ''}
 												onChange={formik.handleChange}
 												onKeyUp={e => {
 													if (e.key === 'Enter') formik.handleSubmit();
@@ -209,16 +229,6 @@ const index = () => {
 					</Accordion>
 
 					<div className="card text-black m-0">
-						<div className="card-header m-0">
-							<button
-								type="button"
-								className="btn btn-primary"
-								// onClick={() => modalRef.current?.openModal()}
-							>
-								Registrar
-							</button>
-						</div>
-
 						<div className="card-body">
 							{isFetchingCliente ? (
 								<LoadingTable />

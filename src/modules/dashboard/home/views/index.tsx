@@ -1,6 +1,53 @@
+import useClientePaginatedSearch from '@/modules/pages/login/application/useClientePaginatedSearch';
+import { useCategoriaFindAll } from '../../categorias/application';
+import { useFoodFindAll } from '../../food/application';
 import '../styles/home.css';
+import { PaginationRequest } from '@/modules/shared/domain';
+import { ClienteFilter } from '@/modules/pages/login/domain';
+import { useState } from 'react';
+import useOrdenPaginatedSearch from '../../orden/application/useOrdenPaginatedSearch';
+import { OrdenFilter } from '../../orden/domain/OrdenFilter';
+import { UsuarioFilter } from '../../usuario/domain';
+import { useUsuarioPaginated } from '../../usuario/application';
+import { Link } from 'react-router-dom';
 
 const index = () => {
+	const { data: dataCategoria } = useCategoriaFindAll();
+	const { data: dataFood } = useFoodFindAll();
+	const [searchFilter, setSearchFilter] = useState<PaginationRequest<ClienteFilter>>({
+		page: 1,
+		perPage: 10,
+		filter: {
+			apellidos: '',
+			nombres: '',
+			correo: '',
+		},
+	});
+
+	const { data: dataCliente } = useClientePaginatedSearch(searchFilter);
+
+	const [searchFilte] = useState<PaginationRequest<OrdenFilter>>({
+		page: 1,
+		perPage: 10,
+		filter: {
+			tipoPago: '',
+			estado: 0,
+		},
+	});
+
+	const { data: dataOrden } = useOrdenPaginatedSearch(searchFilte);
+
+	const [searchFilterUsuario] = useState<PaginationRequest<UsuarioFilter>>({
+		page: 1,
+		perPage: 10,
+		filter: {
+			apellido: '',
+			nombre: '',
+			email: '',
+		},
+	});
+
+	const { data: dataUsuario } = useUsuarioPaginated(searchFilterUsuario);
 	return (
 		<>
 			<div>
@@ -31,10 +78,12 @@ const index = () => {
 										</div>
 									</div>
 									<h1 className="text-white" style={{ color: '#FFA07A' }}>
-										8
+										{dataCategoria?.length ?? 0}
 									</h1>
 
-									<span className="text-white">ver detalles</span>
+									<Link to="categoria" className="text-white">
+										ver detalles
+									</Link>
 								</div>
 							</div>
 						</div>
@@ -55,10 +104,12 @@ const index = () => {
 										</div>
 									</div>
 									<h1 className="text-white" style={{ color: '#FFA07A' }}>
-										25
+										{dataFood?.length ?? 0}
 									</h1>
 
-									<span className="text-white">ver detalles</span>
+									<Link to="foodmenu" className="text-white">
+										ver detalles
+									</Link>
 								</div>
 							</div>
 						</div>
@@ -79,10 +130,12 @@ const index = () => {
 										</div>
 									</div>
 									<h1 className="text-white" style={{ color: '#FFA07A' }}>
-										18
+										{dataOrden.total ?? 0}
 									</h1>
 
-									<span className="text-white">ver detalles</span>
+									<Link to="ordenes" className="text-white">
+										ver detalles
+									</Link>
 								</div>
 							</div>
 						</div>
@@ -103,10 +156,12 @@ const index = () => {
 										</div>
 									</div>
 									<h1 className="text-white" style={{ color: '#FFA07A' }}>
-										20
+										{dataCliente?.total ?? 0}
 									</h1>
 
-									<span className="text-white">ver detalles</span>
+									<Link to="cliente" className="text-white">
+										ver detalles
+									</Link>
 								</div>
 							</div>
 						</div>
@@ -127,10 +182,12 @@ const index = () => {
 										</div>
 									</div>
 									<h1 className="text-white" style={{ color: '#FFA07A' }}>
-										15
+										{dataUsuario?.total ?? 0}
 									</h1>
 
-									<span className="text-white">ver detalles</span>
+									<Link to="usuario" className="text-white text-decoration-none">
+										ver detalles
+									</Link>
 								</div>
 							</div>
 						</div>

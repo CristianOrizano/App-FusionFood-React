@@ -1,5 +1,4 @@
 import logo from '../../../core/imagenes/logoDash.png';
-import fire from '../../../core/imagenes/flame.png';
 
 const FooterPage = () => {
 	return (

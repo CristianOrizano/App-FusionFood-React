@@ -21,8 +21,8 @@ const DetalleModal = forwardRef<ModalDetalleRef, ModalProps>((_, ref) => {
 	const [ordenData, setOrdenData] = useState<OrdenResponse>();
 	const [id, setId] = useState<number>();
 	const [subTotal, setSubTotal] = useState<number>();
-	const { data: ordenDetalle, isFetching: isFetchingOrden } = useDetalleOrden(Number(id));
-	const { data: dataEstados, isFetching: isFetchingEstados } = useEstadoPedidoFindAll();
+	const { data: ordenDetalle } = useDetalleOrden(Number(id));
+	const { data: dataEstados } = useEstadoPedidoFindAll();
 	const { mutateAsync: mutateAsyncEdit } = useOrdenUpdate();
 
 	// Methods
@@ -97,13 +97,13 @@ const DetalleModal = forwardRef<ModalDetalleRef, ModalProps>((_, ref) => {
 	useEffect(() => {
 		if (ordenDetalle != null) {
 			let total = 0;
-			console.log('OrdenDetalle>>>', ordenDetalle);
 			ordenDetalle?.forEach(item => {
 				const subtotal = item.cantidad * item.foodMenu.precio;
 				total += subtotal;
 			});
+
 			const subTotalFor: string = total.toFixed(2);
-			console.log('Estro subtotal>>>>', subTotalFor);
+
 			setSubTotal(Number(subTotalFor));
 		}
 	}, [ordenDetalle]);

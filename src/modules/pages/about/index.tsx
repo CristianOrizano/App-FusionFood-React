@@ -28,7 +28,7 @@ const index = () => {
 							/>
 						</div>
 						<div className="col-sm-12 col-md-6 col-lg-6 ">
-							<h2 className="text-center  mt-3 text-danger">Sobre nuestro restaurante</h2>
+							<h2 className="text-center  mt-3 text-danger fw-bold">Nuestro restaurante</h2>
 							<p className=" mt-4">
 								En FusionFood, nuestra misión es ofrecer a nuestros usuarios una experiencia
 								gastronómica única y accesible. Queremos conectar a los amantes de la comida con una

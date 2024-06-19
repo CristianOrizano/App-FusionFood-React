@@ -92,7 +92,7 @@ const NavbarPage = (): JSX.Element => {
 								<li className="list-group-item  border-top bg-secondary" key={key}>
 									<div className="row align-items-center  ">
 										<div className="col-3 bg-white px-0">
-											<img src={item.imgFire} className="img-fluid" />
+											<img src={item.imgFire} className="img-fluid" alt={`Image ${key}`} />
 										</div>
 										<div className="col-7 ">
 											<p className=" lh-1">
