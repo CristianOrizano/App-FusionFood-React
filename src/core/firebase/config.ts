@@ -22,7 +22,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const storage = getStorage(app);
 
-export function uploadImage(file: File, name: string, carpeta: string): Promise<void> {
+/*export function uploadImage(file: File, name: string, carpeta: string): Promise<void> {
 	return new Promise((resolve, reject) => {
 		const storageref = ref(storage, `${carpeta}/${name}`);
 		uploadBytes(storageref, file)
@@ -35,6 +35,16 @@ export function uploadImage(file: File, name: string, carpeta: string): Promise<
 				reject(error); // Rechazamos la promesa si hay un error
 			});
 	});
+}*/
+export async function uploadImage(file: File, name: string, carpeta: string): Promise<void> {
+	const storageref = ref(storage, `${carpeta}/${name}`);
+	try {
+		const response = await uploadBytes(storageref, file);
+		console.log(response);
+	} catch (error) {
+		console.error(error);
+		throw error; // Lanza el error para que el llamador pueda manejarlo
+	}
 }
 
 export const getPhoto = async (name: string, carpeta: string): Promise<string> => {

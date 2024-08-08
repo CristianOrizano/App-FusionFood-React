@@ -31,6 +31,7 @@ export const isValidAuthorization = (): boolean => {
 
 	const expireOn = new Date(user.security.expireOn);
 	const currentDate = new Date();
-
+	console.log('expira', expireOn);
+	console.log('currentDate', currentDate);
 	return expireOn > currentDate;
 };

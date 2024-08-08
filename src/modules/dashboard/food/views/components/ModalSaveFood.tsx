@@ -45,7 +45,7 @@ const ModalSaveFood = forwardRef<ModalSaveFoodRef, ModalProps>((_, ref) => {
 
 	// Hooks
 	const { data: food, isFetching: isFetchingFood } = useFoodFindById(id);
-	const { data: dataCategoria, isFetching: isFetchingCategoria } = useCategoriaListSimple();
+	const { data: dataCategoria } = useCategoriaListSimple();
 	const { mutateAsync: mutateAsyncCreate } = useFoodCreate();
 	const { mutateAsync: mutateAsyncEdit } = useFoodUpdate();
 	//____
@@ -81,7 +81,6 @@ const ModalSaveFood = forwardRef<ModalSaveFoodRef, ModalProps>((_, ref) => {
 
 	const saveCategoria = async (payload: FoodRequest): Promise<void> => {
 		try {
-			console.log('VALORES>>>', payload);
 			if (id != null) {
 				await mutateAsyncEdit({ food: payload, id });
 			} else {

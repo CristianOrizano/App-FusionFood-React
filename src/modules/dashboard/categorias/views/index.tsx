@@ -9,16 +9,17 @@ import { Badge, Col, Form } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import ModalSaveCategoria, { ModalSaveCategoriaRef } from './components/ModalSaveCategoria';
 import Select from 'react-select';
-import { RECORD_STATUS } from '@/core/helpers/RecordStateHelper';
+
 import { ESTADO_DESHABILITAR, ESTADO_HABILITAR } from '@/core/constantes';
 import { showAlertCondition } from '@/core/helpers/SwalHelper';
 import useCategoriaDeleteById from '../application/useCategoriaDeleteById';
 import upload from '@/core/imagenes/upload.jpg';
 import ModalPhotoSave, { ModalPhotoSaveRef } from './components/ModalPhotSave';
+import '@/layouts/views/templates/js/app.js';
 
-interface CategoriaFilterFormik extends CategoriaFilter {
-	recordState: RecordState | null;
-}
+/*interface CategoriaFilterFormik extends CategoriaFilter {
+	//recordState: RecordState | null;
+}*/
 
 const index = () => {
 	const [searchFilter, setSearchFilter] = useState<PaginationRequest<CategoriaFilter>>({
@@ -31,12 +32,11 @@ const index = () => {
 		},
 	});
 
-	const formik = useFormik<CategoriaFilterFormik>({
+	const formik = useFormik<CategoriaFilter>({
 		initialValues: {
 			nombre: '',
 			descripcion: '',
 			estado: null,
-			recordState: null,
 		},
 		onSubmit: values => {
 			setSearchFilter(prev => {
@@ -46,7 +46,7 @@ const index = () => {
 					filter: {
 						nombre: values.nombre,
 						descripcion: values.descripcion,
-						estado: values.recordState?.value,
+						estado: values.estado,
 					},
 				};
 			});
@@ -159,6 +159,11 @@ const index = () => {
 		}),
 	];
 
+	const RECORD_STATUS = [
+		{ value: true, label: 'Activo' },
+		{ value: false, label: 'Inactivo' },
+	];
+
 	return (
 		<>
 			<div className="row">
@@ -244,11 +249,11 @@ const index = () => {
 										<Form.Label>Estado</Form.Label>
 										<Select
 											className="react__select react__select__sm"
-											name="recordState"
-											value={formik.values?.recordState}
+											name="estado"
+											value={RECORD_STATUS.find(option => option.value === formik.values.estado)}
 											options={RECORD_STATUS}
 											onChange={(option, target) => {
-												void formik.setFieldValue(target?.name ?? '', option);
+												void formik.setFieldValue(target?.name ?? '', option?.value);
 												formik.handleSubmit();
 											}}
 											placeholder="Buscar"

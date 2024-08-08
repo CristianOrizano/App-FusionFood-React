@@ -1,10 +1,11 @@
 import { Button, Form, InputGroup, Offcanvas } from 'react-bootstrap';
 import logo from '../../../core/imagenes/logoDash.png';
+import nodisponible from '../../../core/imagenes/variedad.jpg';
 import fire from '../../../core/imagenes/flame.png';
 import perfil from '../../../core/imagenes/profile.png';
 import { useNavigate } from 'react-router';
-import { createRef, useEffect, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { createRef, KeyboardEvent, useEffect, useState } from 'react';
+import { Link, NavLink } from 'react-router-dom';
 import '../../pages/pago/styles/pago.css';
 import { useCart } from '@/modules/dashboard/food/application/useCar';
 import ModalLogin, { ModalLoginRef } from './components/ModalLogin';
@@ -12,7 +13,9 @@ import { LocalStorageSessionCliente } from '@/core/sessions';
 import { getPhoto } from '@/core/firebase/config';
 import shoping from '@/core/imagenes/shopping-cart.png';
 import Swal from 'sweetalert2';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
+//const NavbarPage: React.FC<any> = ({ searchFilter, setSearchFilter, setId }) => {
 const NavbarPage = (): JSX.Element => {
 	const [query, setQuery] = useState('');
 	const navigate = useNavigate();
@@ -34,11 +37,10 @@ const NavbarPage = (): JSX.Element => {
 		setQuery(e.target.value);
 	};
 	const search = () => {
-		console.log('search >>>', query);
 		if (query != '') {
-			navigate(`/menu/${query}`);
+			navigate(`/menu/search/${query}`);
 		} else {
-			navigate(`/menu/${' '}`);
+			navigate(`/`);
 		}
 		setQuery('');
 	};
@@ -90,12 +92,20 @@ const NavbarPage = (): JSX.Element => {
 						{data && data.length > 0 ? (
 							data?.map((item, key) => (
 								<li className="list-group-item  border-top bg-secondary" key={key}>
-									<div className="row align-items-center  ">
-										<div className="col-3 bg-white px-0">
-											<img src={item.imgFire} className="img-fluid" alt={`Image ${key}`} />
+									<div className="row align-items-center ">
+										<div className="col-3 px-0 text-center">
+											<LazyLoadImage
+												src={item.imgFire || nodisponible} // URL de la imagen o una imagen por defecto
+												alt={`Image ${key}`}
+												effect="blur" // Efecto de desenfoque mientras se carga la imagen
+												// Ajusta el tamaño de la imagen
+												placeholderSrc={nodisponible}
+												className="img-fluid "
+												style={{ height: '60px', width: '70px' }}
+											/>
 										</div>
 										<div className="col-7 ">
-											<p className=" lh-1">
+											<p className=" lh-1 ">
 												<small> {item.nombre}</small>
 											</p>
 											<div>
@@ -185,13 +195,13 @@ const NavbarPage = (): JSX.Element => {
 							<div className="d-flex  align-items-center ">
 								<p className=" m-1">{ClienteAuth.nombres} </p>
 
-								<a href="/profile">
+								<Link to="/profile">
 									<img
 										className="rounded-pill border border-dark bg-dark"
 										src={selectedImage || perfil}
 										style={{ width: '35px', height: '35px' }}
 									/>
-								</a>
+								</Link>
 							</div>
 						) : (
 							<div className="fs-4">
@@ -235,7 +245,7 @@ const NavbarPage = (): JSX.Element => {
 							<li className="nav-item">
 								<NavLink
 									className={({ isActive }) => `nav-link fw-bold p-2 ${isActive ? 'active' : ''}`}
-									to="/menu"
+									to={`/menu/`}
 								>
 									Menu
 								</NavLink>
@@ -264,8 +274,14 @@ const NavbarPage = (): JSX.Element => {
 									aria-describedby="basic-addon1"
 									value={query}
 									onChange={e => handleChange(e)}
+									onKeyDown={e => {
+										if (e.key === 'Enter') {
+											e.preventDefault();
+											search();
+										}
+									}}
 								/>
-								<InputGroup.Text id="basic-addon1" onClick={() => search()}>
+								<InputGroup.Text id="basic-addon1" onClick={search}>
 									<i className="fa-solid fa-magnifying-glass"></i>
 								</InputGroup.Text>
 							</InputGroup>

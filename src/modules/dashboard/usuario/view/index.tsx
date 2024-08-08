@@ -1,5 +1,5 @@
 import { FilterPage, PaginationRequest } from '@/modules/shared/domain';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { UsuarioFilter, UsuarioResponse } from '../domain';
 import { useUsuarioPaginated } from '../application';
 import { useFormik } from 'formik';
@@ -8,6 +8,7 @@ import LoadingTable from '@/core/components/loading/LoadingTable';
 import { createColumnHelper } from '@tanstack/react-table';
 import perfil from '@/core/imagenes/profile.png';
 import { TableCoreSelectPaginated } from '@/core/components/table';
+import '@/layouts/views/templates/js/app.js';
 
 const index = () => {
 	// Hooks

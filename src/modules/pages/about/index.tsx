@@ -10,8 +10,8 @@ const index = () => {
 			<main className="page-wrapper">
 				<NavbarPage />
 				<section
-					className="bg-darker bg-size-cover bg-position-center py-5 d-flex align-items-center"
-					style={{ backgroundImage: `url(${bannerabout})`, width: '100%', minHeight: '300px' }}
+					className="bg-darker bg-size-cover bg-position-center py-5 "
+					style={{ backgroundImage: `url(${bannerabout})` }}
 				>
 					<div className="container py-md-4 text-center">
 						<h1 className="text-secondary pt-5 fw-bold">Acerca de Nosotros</h1>

@@ -10,7 +10,7 @@ const routes: RouteObject[] = [
 		},
 	},
 	{
-		path: '/menu',
+		path: '/menu/:category?',
 		async lazy() {
 			const { default: MenuLayout } = await import('../modules/pages/menu/view/index');
 			return { element: <MenuLayout /> };
@@ -24,7 +24,7 @@ const routes: RouteObject[] = [
 		},
 	},
 	{
-		path: '/menu/:query',
+		path: '/menu/search/:query?',
 		async lazy() {
 			const { default: MenuLayout } = await import('../modules/pages/menu/view/index');
 			return { element: <MenuLayout /> };
@@ -70,7 +70,11 @@ const routes: RouteObject[] = [
 		async lazy() {
 			const { default: DashLayout } = await import('../layouts/views/Admin');
 			return {
-				element: <PrivateOutlet>{<DashLayout />}</PrivateOutlet>,
+				element: (
+					<PrivateOutlet>
+						<DashLayout />
+					</PrivateOutlet>
+				),
 			};
 		},
 		children: [
@@ -78,7 +82,13 @@ const routes: RouteObject[] = [
 				index: true,
 				async lazy() {
 					const { default: Home } = await import('../modules/dashboard/home/views/index');
-					return { Component: Home };
+					return {
+						element: (
+							<PrivateOutlet>
+								<Home />
+							</PrivateOutlet>
+						),
+					};
 				},
 			},
 			{
@@ -87,35 +97,65 @@ const routes: RouteObject[] = [
 					const { default: Categoria } = await import(
 						'../modules/dashboard/categorias/views/index'
 					);
-					return { Component: Categoria };
+					return {
+						element: (
+							<PrivateOutlet>
+								<Categoria />
+							</PrivateOutlet>
+						),
+					};
 				},
 			},
 			{
 				path: 'foodmenu',
 				async lazy() {
-					const { default: food } = await import('../modules/dashboard/food/views/index');
-					return { Component: food };
+					const { default: Food } = await import('../modules/dashboard/food/views/index');
+					return {
+						element: (
+							<PrivateOutlet>
+								<Food />
+							</PrivateOutlet>
+						),
+					};
 				},
 			},
 			{
 				path: 'usuario',
 				async lazy() {
 					const { default: Usuario } = await import('../modules/dashboard/usuario/view/index');
-					return { element: <Usuario /> };
+					return {
+						element: (
+							<PrivateOutlet>
+								<Usuario />
+							</PrivateOutlet>
+						),
+					};
 				},
 			},
 			{
 				path: 'cliente',
 				async lazy() {
 					const { default: Cliente } = await import('../modules/dashboard/cliente/views/index');
-					return { element: <Cliente /> };
+					return {
+						element: (
+							<PrivateOutlet>
+								<Cliente />
+							</PrivateOutlet>
+						),
+					};
 				},
 			},
 			{
 				path: 'ordenes',
 				async lazy() {
 					const { default: Orden } = await import('../modules/dashboard/orden/views/index');
-					return { element: <Orden /> };
+					return {
+						element: (
+							<PrivateOutlet>
+								<Orden />
+							</PrivateOutlet>
+						),
+					};
 				},
 			},
 		],

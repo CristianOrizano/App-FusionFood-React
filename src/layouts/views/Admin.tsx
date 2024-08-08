@@ -4,20 +4,19 @@ import Footer from './components/Footer';
 import { Outlet } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 import './demo/nav.css';
+
 const Admin = () => {
 	return (
 		<>
-			<div className="wrapper">
-				<Siderbar />
-				<div className="main">
-					<Navbar />
-					<main className="content">
-						<Container fluid>
-							<Outlet />
-						</Container>
-					</main>
-					<Footer />
-				</div>
+			<Siderbar />
+			<div className="main">
+				<Navbar />
+				<main className="content">
+					<Container fluid>
+						<Outlet />
+					</Container>
+				</main>
+				<Footer />
 			</div>
 		</>
 	);

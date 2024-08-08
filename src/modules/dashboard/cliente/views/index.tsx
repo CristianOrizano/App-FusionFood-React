@@ -4,13 +4,14 @@ import { FilterPage, PaginationRequest } from '@/modules/shared/domain';
 import { createColumnHelper } from '@tanstack/react-table';
 import { useFormik } from 'formik';
 import perfil from '@/core/imagenes/profile.png';
-import React, { MouseEvent, useState } from 'react';
+import { MouseEvent, useState } from 'react';
 import { Accordion, Badge, Col, Form, Row } from 'react-bootstrap';
 import LoadingTable from '@/core/components/loading/LoadingTable';
 import { TableCoreSelectPaginated } from '@/core/components/table';
 import { ESTADO_DESHABILITAR, ESTADO_HABILITAR } from '@/core/constantes';
 import { showAlertCondition } from '@/core/helpers/SwalHelper';
 import useClienteDeleteById from '@/modules/pages/login/application/useClienteDeleteById';
+import '@/layouts/views/templates/js/app.js';
 
 const index = () => {
 	// Hooks

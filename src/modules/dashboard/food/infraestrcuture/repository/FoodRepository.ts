@@ -148,9 +148,7 @@ export const paginatedSearch = async (
 				estado: item.estado,
 			};
 			if (item.nombreImg != null) {
-				console.log('name>>>', item.nombreImg);
 				food.imgFire = await getPhoto(item.nombreImg, 'food');
-				console.log('IMGFIRE>>>', food.imgFire);
 			}
 
 			return food;

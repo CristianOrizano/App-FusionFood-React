@@ -7,6 +7,7 @@ import useLogin from '../application/useLogin';
 import { LocalStorageSession } from '@/core/sessions';
 import Swal from 'sweetalert2';
 import { AxiosError } from 'axios';
+import '@/layouts/views/templates/js/app.js';
 
 interface DataMessage {
 	Message: string;

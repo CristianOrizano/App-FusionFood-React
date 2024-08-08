@@ -1,5 +1,5 @@
 import { getPhoto } from '@/core/firebase/config';
-import { FoodCar, FoodResponse } from '../../domain';
+import { FoodCar } from '../../domain';
 
 const STORAGE_CART_KEY = 'STORAGE_CART_APP';
 
@@ -12,6 +12,18 @@ export const getCart = (): FoodCar[] => {
 	if (data == null) return [];
 
 	return JSON.parse(data);
+};
+export const addItemToCart = (product: FoodCar): void => {
+	const cartItems = getCart();
+	const itemIndex = cartItems.findIndex(item => item.id === product.id);
+
+	if (itemIndex > -1) {
+		cartItems[itemIndex].cantidad += 0;
+	} else {
+		cartItems.push(product);
+	}
+
+	saveCart(cartItems);
 };
 
 export const getTotalPagar = (): string => {
@@ -29,34 +41,10 @@ export const getTotalPagar = (): string => {
 	}); //redondea
 };
 
-export const addItemToCart = (product: FoodCar): void => {
-	const cartItems = getCart();
-	const itemIndex = cartItems.findIndex(item => item.id === product.id);
-
-	if (itemIndex > -1) {
-		cartItems[itemIndex].cantidad += 0;
-	} else {
-		cartItems.push(product);
-	}
-
-	saveCart(cartItems);
-};
-
 export const removeItemFromCart = (productId: number): void => {
 	let cartItems = getCart();
 	cartItems = cartItems.filter(item => item.id !== productId);
 	saveCart(cartItems);
-};
-
-// Función para actualizar la cantidad de un producto en el carrito
-export const updateQuantity = (productId: number, quantity: number): void => {
-	const cartItems = getCart();
-	const itemIndex = cartItems.findIndex(item => item.id === productId);
-
-	if (itemIndex > -1) {
-		cartItems[itemIndex].cantidad = Math.min(quantity, 5); // Limitar a un máximo de 5
-		saveCart(cartItems);
-	}
 };
 
 export const limpiarCarrito = (): void => {

@@ -12,7 +12,7 @@ import DetalleModal, { ModalDetalleRef } from './components/DetalleModal';
 import Select from 'react-select';
 import useEstadoPedidoFindAll from '../application/useEstadoPedidoFindAll';
 import { pdfHojaResumen } from './components/ReporteOrden';
-
+import '@/layouts/views/templates/js/app.js';
 const index = () => {
 	// Hooks
 	const [searchFilter, setSearchFilter] = useState<PaginationRequest<OrdenFilter>>({

@@ -5,7 +5,7 @@ interface CartContextType {
 	carritoLista: FoodCar[];
 	addToCart: (product: FoodCar) => void;
 	removeFromCart: (productId: number) => void;
-	updateQuantity: (productId: number, quantity: number) => void;
+
 	clearCart: () => void;
 	aumentar: (productId: number) => void;
 	disminuir: (productId: number) => void;

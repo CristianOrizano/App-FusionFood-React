@@ -4,7 +4,7 @@ import categoria2 from '../../../core/imagenes/category/02.jpg';
 import chifa from '../../../core/imagenes/category/chifa2.png';
 import categoria4 from '../../../core/imagenes/category/04.jpg';
 import categoria5 from '../../../core/imagenes/category/05.jpg';
-import polleria from '../../../core/imagenes/category/polleria.jpg';
+
 import delivery from '../../../core/imagenes/variedad.jpg';
 import pedido from '../../../core/imagenes/phone.png';
 import './styles/test.css';
@@ -293,6 +293,13 @@ const index = () => {
 						</li>
 					</ul>
 				</div>
+
+				<a className="mx-5 my-3 text-center">
+					<p className="fw-bold">FFFFF</p>
+				</a>
+				<button type="button" className="btn btn-link">
+					Link
+				</button>
 			</div>
 		</>
 	);

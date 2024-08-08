@@ -21,9 +21,7 @@ export const findAll = async (): Promise<CategoriaResponse[]> => {
 			estado: item.estado,
 		};
 		if (item.nombreImg != null) {
-			console.log('name>>>', item.nombreImg);
 			categoria.imgFire = await getPhoto(item.nombreImg, 'categoria');
-			console.log('IMGFIRE>>>', categoria.imgFire);
 		}
 		return categoria;
 	});

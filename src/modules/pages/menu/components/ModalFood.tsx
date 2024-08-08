@@ -7,7 +7,7 @@ import { getPhoto } from '@/core/firebase/config';
 import nodisponible from '../../../../core/imagenes/nodisponible.png';
 
 import { FoodCar, FoodResponse } from '@/modules/dashboard/food/domain';
-import Swal from 'sweetalert2';
+
 import { useCart } from '@/modules/dashboard/food/application/useCar';
 import { toastSuccess } from '@/core/helpers/ToastHelper';
 
@@ -93,8 +93,7 @@ const ModalFood = forwardRef<ModalFoodRef, ModalProps>((_, ref) => {
 								className=""
 								style={{
 									height: '490px',
-
-									objectFit: 'cover',
+									//objectFit: 'cover',
 								}}
 								src={selectedImage || nodisponible}
 								alt="Pizza"

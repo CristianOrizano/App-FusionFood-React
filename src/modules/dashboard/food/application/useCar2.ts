@@ -1,11 +1,9 @@
-import { useContext, useEffect, useState } from 'react';
-import { CarContext } from '../infraestrcuture/context/CarContext';
+import { useEffect, useState } from 'react';
+
 import {
 	addItemToCart,
-	clearCart,
 	fetchCartItems,
 	removeItemFromCart,
-	updateQuantity,
 } from '../infraestrcuture/repository/FoodCarRepository';
 import { FoodCar } from '../domain';
 
@@ -22,13 +20,7 @@ export const useCart2 = () => {
 		fetchCartItems().then(setCartItems);
 	};
 
-	const updateCantidad = (productId: number, quantity: number) => {
-		updateQuantity(productId, quantity);
-		fetchCartItems().then(setCartItems);
-	};
-
 	const clear = () => {
-		clearCart();
 		setCartItems([]);
 	};
 	useEffect(() => {
@@ -39,8 +31,6 @@ export const useCart2 = () => {
 		cartItems,
 		addToCart,
 		removeFromCart,
-		updateQuantity,
 		clear,
-		updateCantidad,
 	};
 };

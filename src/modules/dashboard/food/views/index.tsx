@@ -1,5 +1,5 @@
 import { FilterPage, PaginationRequest } from '@/modules/shared/domain';
-import { MouseEvent, createRef, useState } from 'react';
+import { MouseEvent, createRef, useRef, useState } from 'react';
 import { FoodFilter, FoodResponse } from '../domain';
 
 import { useFormik } from 'formik';
@@ -14,7 +14,7 @@ import { TableCoreSelectPaginated } from '@/core/components/table';
 import { useCategoriaListSimple } from '../../categorias/application';
 import Select from 'react-select';
 import ModalPhotoSave, { ModalPhotoSaveRef } from './components/ModalPhotoSave';
-
+import '@/layouts/views/templates/js/app.js';
 import upload from '@/core/imagenes/upload.jpg';
 
 const index = () => {
@@ -30,7 +30,7 @@ const index = () => {
 			idCategoria: 0,
 		},
 	});
-	const { data: dataCategoria, isFetching: isFetchingCategoria } = useCategoriaListSimple();
+	const { data: dataCategoria } = useCategoriaListSimple();
 	const { mutateAsync: mutateAsyncDelete } = useFoodDeleteById();
 	const { data: docData, isFetching: isFetchingFood } = useFoodPaginatedSearch(searchFilter);
 	//---
@@ -59,7 +59,6 @@ const index = () => {
 	});
 
 	const goToPage = (payload: FilterPage): void => {
-		console.log('payload', payload);
 		setSearchFilter({
 			...searchFilter,
 			page: payload.page,
@@ -91,8 +90,8 @@ const index = () => {
 		});
 	};
 
-	const modalRef = createRef<ModalSaveFoodRef>();
-	const modalPhotoRef = createRef<ModalPhotoSaveRef>();
+	const modalRef = useRef<ModalSaveFoodRef>(null);
+	const modalPhotoRef = useRef<ModalPhotoSaveRef>(null);
 
 	//definir-columnas
 	const columnHelper = createColumnHelper<FoodResponse>();
@@ -133,7 +132,7 @@ const index = () => {
 		columnHelper.accessor('estado', {
 			header: () => (
 				// Utilizamos una función para retornar el encabezado
-				<div className="text-center">Estado</div> // El encabezado centrado
+				<div className="text-center">Estado</div>
 			),
 			cell: ({ row }) => (
 				<div className="text-center">
@@ -313,6 +312,7 @@ const index = () => {
 					</div>
 				</Col>
 			</Row>
+
 			<ModalSaveFood ref={modalRef} />
 			<ModalPhotoSave ref={modalPhotoRef} />
 		</>

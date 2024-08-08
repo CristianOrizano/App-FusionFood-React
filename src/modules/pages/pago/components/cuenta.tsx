@@ -3,12 +3,14 @@ import cards from '@/core/imagenes/cards.png';
 import '../../../../layouts/views/static/css/theme.min2.css';
 import * as Yup from 'yup';
 import { useCart } from '@/modules/dashboard/food/application/useCar';
-import { LocalStorageSession, LocalStorageSessionCliente } from '@/core/sessions';
+import { LocalStorageSessionCliente } from '@/core/sessions';
 import { DetalleOrden, OrdenRequest } from '@/modules/dashboard/orden/domain/OrdenRequest';
 import { useFormik } from 'formik';
 import useOrdenRegistrar from '@/modules/dashboard/orden/application/useOrdenRegistrar';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router';
+import { useState } from 'react';
+import { FadeLoader, PulseLoader, ScaleLoader, SyncLoader } from 'react-spinners';
 
 const cuenta = () => {
 	const navigate = useNavigate();
@@ -16,7 +18,7 @@ const cuenta = () => {
 	const { carritoLista: data, clearCart, total } = useCart();
 	const ClienteAuth = LocalStorageSessionCliente.getAuthorization();
 	const { mutateAsync: mutateAsyncCreate } = useOrdenRegistrar();
-
+	const [loading, setLoading] = useState(false);
 	const formik = useFormik({
 		initialValues: {
 			direccion: '',
@@ -52,14 +54,18 @@ const cuenta = () => {
 			detalleOrdens: detalles,
 		};
 		await mutateAsyncCreate(orden);
-		clearCart();
-		Swal.fire({
-			title: 'Correcto!',
-			text: 'Exito al guardar!',
-			icon: 'success',
-		});
-		navigate(`/`);
-		console.log('VALORES==>', orden);
+
+		setLoading(true);
+		setTimeout(() => {
+			clearCart();
+			Swal.fire({
+				title: 'Correcto!',
+				text: 'Exito al guardar!',
+				icon: 'success',
+			});
+			setLoading(false);
+			navigate('/profile');
+		}, 3000);
 	};
 	return (
 		<>
@@ -283,6 +289,11 @@ const cuenta = () => {
 								</div>
 							</div>
 						</div>
+						{loading && (
+							<div className="spinner-overlay">
+								<PulseLoader size={30} color="#f2f3f4" loading={loading} />
+							</div>
+						)}
 					</div>
 				</div>
 			</main>

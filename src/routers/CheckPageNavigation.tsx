@@ -1,4 +1,4 @@
-import { isValidAuthorization } from '@/core/sessions/LocalStorageSession';
+import { existsAuthorization, isValidAuthorization } from '@/core/sessions/LocalStorageSession';
 import { ReactElement } from 'react';
 import { Navigate } from 'react-router-dom';
 
@@ -7,9 +7,12 @@ interface BaseProps {
 }
 export const PrivateOutlet = ({ children }: BaseProps): JSX.Element => {
 	const auth = isValidAuthorization();
-	console.log('estado', auth);
+	const exist = existsAuthorization();
 
-	if (!auth) return <Navigate to="/login" replace />;
+	if (!exist) return <Navigate to="/login" replace />;
+	if (!auth) {
+		return <Navigate to="/login" replace />;
+	}
 
 	return children;
 };

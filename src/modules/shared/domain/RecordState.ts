@@ -1,5 +1,4 @@
 export default interface RecordState {
-  value: boolean;
-  label: string;
-  color: string;
+	value: boolean;
+	label: string;
 }

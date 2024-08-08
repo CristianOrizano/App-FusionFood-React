@@ -1,8 +1,8 @@
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import logo from '../../../core/imagenes/logoDash.png';
 import fire from '../../../core/imagenes/flame.png';
+
 const Siderbar = () => {
-	const location = useLocation();
 	return (
 		<>
 			<nav id="sidebar" className="sidebar js-sidebar">

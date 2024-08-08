@@ -2,10 +2,11 @@ import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import { Button, Form, Modal, ModalProps } from 'react-bootstrap';
 import upload from '@/core/imagenes/upload.jpg';
 import { getPhoto, updateImage, uploadImage } from '@/core/firebase/config';
-import { useFoodCreate, useFoodFindById, useFoodUpdate } from '../../application';
+import { useFoodFindById, useFoodUpdate } from '../../application';
 import Swal from 'sweetalert2';
 import { FoodRequest } from '../../domain';
 import { v4 } from 'uuid';
+import ImageSkeleton from '@/core/components/loading/ImageSkeleton';
 
 export interface ModalPhotoSaveRef {
 	openModal: (id?: number) => void;
@@ -19,8 +20,7 @@ const ModalPhotoSave = forwardRef<ModalPhotoSaveRef, ModalProps>((_, ref) => {
 	const [id, setId] = useState<number>();
 	const [errorMessage, setErrorMessage] = useState<string>('');
 	// Hooks
-	const { data: foodData, isFetching: isFetchingFood } = useFoodFindById(id);
-	const { mutateAsync: mutateAsyncCreate } = useFoodCreate();
+	const { data: foodData, isFetching } = useFoodFindById(id);
 	const { mutateAsync: mutateAsyncEdit } = useFoodUpdate();
 
 	const [isImageSelected, setIsImageSelected] = useState(false);
@@ -46,17 +46,20 @@ const ModalPhotoSave = forwardRef<ModalPhotoSaveRef, ModalProps>((_, ref) => {
 			closeModal,
 		};
 	});
-	useEffect(() => {
-		if (foodData?.nombreImg != null) {
-			getPhoto(foodData.nombreImg, 'food')
-				.then(url => {
-					setSelectedImage(url); // Actualiza el estado con la URL de la imagen
-				})
-				.catch(error => {
-					console.error('Error al obtener la URL de la imagen:', error);
-					// Maneja el error si ocurre
-				});
+	// Define la función asíncrona fuera de useEffect
+	const fetchImage = async () => {
+		if (!foodData?.nombreImg) {
+			return; // Salir si no hay nombre de imagen
 		}
+		try {
+			const url = await getPhoto(foodData.nombreImg, 'food');
+			setSelectedImage(url);
+		} catch (error) {
+			console.error('Error al obtener la URL de la imagen:', error);
+		}
+	};
+	useEffect(() => {
+		fetchImage();
 	}, [foodData]);
 
 	const uploadPhoto = async (): Promise<void> => {
@@ -121,11 +124,16 @@ const ModalPhotoSave = forwardRef<ModalPhotoSaveRef, ModalProps>((_, ref) => {
 					<Modal.Title className="text-white fw-bold">Cambiar Foto</Modal.Title>
 				</Modal.Header>
 				<Modal.Body className="bg-white text-center">
-					<img
-						src={selectedImage || upload}
-						className="avatar img-fluid shadow-lg p-3 mb-5 bg-body rounded"
-						style={{ width: '270px', height: '270px' }}
-					/>
+					{isFetching ? (
+						<ImageSkeleton />
+					) : (
+						<img
+							src={selectedImage || upload}
+							className="avatar img-fluid shadow-lg p-3 mb-5 bg-body rounded"
+							style={{ width: '270px', height: '270px' }}
+						/>
+					)}
+
 					{errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
 					<Form.Group controlId="formFile" className="mb-3">
 						<Form.Control type="file" accept=".png, .jpg, .jpeg" onChange={handleImageChange} />

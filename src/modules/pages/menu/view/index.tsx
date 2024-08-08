@@ -24,11 +24,13 @@ import ModalFood, { ModalFoodRef } from '../components/ModalFood';
 import { useCart } from '@/modules/dashboard/food/application/useCar';
 
 import { toastSuccess } from '@/core/helpers/ToastHelper';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 const index = () => {
 	const navigate = useNavigate();
 	//recuperar parametro por ruta
 	const { query } = useParams();
+	const { category } = useParams();
 	console.log('query>>', query);
 	//hooks
 	const [searchFilter, setSearchFilter] = useState<PaginationRequest<FoodFilter>>({
@@ -37,7 +39,7 @@ const index = () => {
 		filter: {
 			precio: 0,
 			descripcion: '',
-			nombre: query as string,
+			nombre: '',
 			idCategoria: 0,
 		},
 	});
@@ -47,8 +49,8 @@ const index = () => {
 	const [columns, setColumns] = useState(5);
 	const { data: dataCategorias, isFetching: isFetchingCategoria } = useCategoriaFindAll();
 	const { data: docData, isFetching: isFetchingFood } = useFoodPaginatedSearch(searchFilter);
-	const { data: dataCategoria, isFetching: isFetchingCategoriafind } = useCategoriaFindById(id);
-
+	const { data: dataCategoria } = useCategoriaFindById(id);
+	const [loading, setLoading] = useState(false);
 	const [pageSize, setPageSize] = useState<number>(10);
 	const perPageItems: number[] = [20, 30, 40, 50, 100];
 	const { addToCart } = useCart();
@@ -65,38 +67,25 @@ const index = () => {
 		setSortOrder('');
 		setSearchFilter({
 			...searchFilter,
+			page: 1,
 			filter: {
 				idCategoria: cod,
 				descripcion: '',
 				nombre: '',
 			},
 		});
-		setId(cod);
-		navigate(`/menu`);
+		navigate(`/menu/${cod}`);
 	};
 
 	const AvanzadoFilter = (tipo: string, order: string): void => {
-		console.log('>>>AVANZADO');
-		console.log('adv', searchFilter);
-		const newFilter = {
-			...searchFilter,
+		setSearchFilter(prevFilter => ({
+			...prevFilter,
 			filter: {
-				...searchFilter.filter,
-				descripcion: '',
-				nombre: '',
+				...prevFilter.filter,
+				sortOrderNombre: tipo === 'nombre' ? order : undefined,
+				sortOrderPrecio: tipo === 'precio' ? order : undefined,
 			},
-		};
-
-		if (tipo === 'nombre') {
-			newFilter.filter.sortOrderNombre = order;
-			delete newFilter.filter.sortOrderPrecio;
-		} else {
-			newFilter.filter.sortOrderPrecio = order;
-			delete newFilter.filter.sortOrderNombre;
-		}
-
-		setSearchFilter(newFilter);
-		navigate(`/menu`);
+		}));
 	};
 
 	const agregarCarro = (food: FoodResponse) => {
@@ -137,11 +126,15 @@ const index = () => {
 	};
 
 	const handleColumnsChange = (num: number) => {
-		setColumns(num);
+		setLoading(true);
+		setTimeout(() => {
+			setColumns(num);
+			setLoading(false); // Oculta el componente de carga después de un delay
+		}, 1500); // Ajusta el tiempo según la animación deseada
 	};
 	useEffect(() => {
 		if (query !== undefined) {
-			console.log('useState', query);
+			setId(0);
 			setSearchFilter({
 				...searchFilter,
 				filter: {
@@ -150,9 +143,30 @@ const index = () => {
 					nombre: query as string,
 				},
 			});
+			/*
+			setSearchFilter(prevFilter => ({
+				...prevFilter,
+				filter: {
+					idCategoria: 0,
+					descripcion: '',
+					nombre: query as string,
+				},
+			}));
+		*/
 		}
-		setId(0);
-	}, [query]);
+		if (category !== undefined) {
+			setId(Number(category));
+
+			setSearchFilter({
+				...searchFilter,
+				filter: {
+					idCategoria: Number(category),
+					descripcion: '',
+					nombre: '',
+				},
+			});
+		}
+	}, [query, category]);
 
 	useEffect(() => {
 		setCategoriaNombre('Todas');
@@ -202,7 +216,7 @@ const index = () => {
 							dataCategorias?.map((item, key) => (
 								<a
 									key={key}
-									className="mx-5 my-3 text-center"
+									className="btn btn-link p-0 mx-5 my-3 text-center"
 									onClick={() => categoriaFilter(item.id)}
 								>
 									<img
@@ -231,13 +245,13 @@ const index = () => {
 
 						<div className="d-flex justify-content-between align-items-center">
 							<a
-								className={`me-3 ${columns === 5 ? 'text-danger' : 'text-dark'}`}
+								className={`me-3 btn btn-link p-0 ${columns === 5 ? 'text-danger ' : 'text-dark'}`}
 								onClick={() => handleColumnsChange(5)}
 							>
 								<i className="bi bi-grid-3x3-gap-fill fs-5"></i>
 							</a>
 							<a
-								className={`me-3 ${columns === 4 ? 'text-danger' : 'text-dark'}`}
+								className={`me-3 btn btn-link p-0 ${columns === 4 ? 'text-danger ' : 'text-dark'}`}
 								onClick={() => handleColumnsChange(4)}
 							>
 								<i className="bi bi-grid-fill fs-5"></i>
@@ -278,7 +292,7 @@ const index = () => {
 					</div>
 
 					<div className="mb-5">
-						{isFetchingFood ? (
+						{loading || isFetchingFood ? (
 							<LoadingFood />
 						) : (
 							<>
@@ -296,16 +310,23 @@ const index = () => {
 												<div key={key} className="col mb-grid-gutter ">
 													<div className="card border pb-2 h-100">
 														<a
-															className="d-flex  h-100 align-items-center"
+															className=""
+															style={{ cursor: 'pointer' }}
 															onClick={() => modalRef.current?.openModal(item.id)}
 														>
-															<img
-																className="card-img-top my-4"
+															<LazyLoadImage
 																src={item.imgFire || nodisponible}
+																className="card-img-top "
+																placeholderSrc={nodisponible}
 																alt="Pizza"
+																width="100%"
+																effect="blur"
+																style={{ objectFit: 'cover', height: '200px' }}
+																// Aplica el efecto de desenfoque mientras se carga
 															/>
 														</a>
-														<div className="card-body pt-1 ">
+
+														<div className="card-body d-flex flex-column justify-content-between pt-3 ">
 															<h3 className="product-title fs-md">
 																<a href="#quick-view" data-bs-toggle="modal">
 																	{item.nombre}
@@ -313,7 +334,7 @@ const index = () => {
 															</h3>
 															<p className="fs-ms text-muted">{item.descripcion}</p>
 
-															<div className="d-flex align-items-center justify-content-between mt-4">
+															<div className="d-flex align-items-center justify-content-between mt-1">
 																<div className="product-price">
 																	<span className="text-accent ">
 																		{item.precio.toLocaleString('es-PE', {

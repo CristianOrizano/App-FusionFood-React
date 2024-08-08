@@ -8,7 +8,6 @@ import {
 	incrementQuantity,
 	limpiarCarrito,
 	removeItemFromCart,
-	updateQuantity,
 } from '../repository/FoodCarRepository';
 
 import { FoodCar } from '../../domain';
@@ -26,10 +25,6 @@ const CarProvider = ({ children }: { children: ReactNode }) => {
 		fetchCartItems().then(setCarritoLista); // Actualiza el estado del carrito después de eliminar un producto
 	};
 
-	const updateQuantity = (productId: number, quantity: number) => {
-		updateQuantity(productId, quantity);
-		// Actualiza el estado del carrito después de actualizar la cantidad
-	};
 	const aumentar = (productId: number) => {
 		incrementQuantity(productId);
 		fetchCartItems().then(setCarritoLista);
@@ -42,7 +37,7 @@ const CarProvider = ({ children }: { children: ReactNode }) => {
 		// Actualiza el estado del carrito después de actualizar la cantidad
 		return contarTotal();
 	};
-	const total = (): number => {
+	const total = (): string => {
 		// Actualiza el estado del carrito después de actualizar la cantidad
 		return getTotalPagar();
 	};
@@ -63,7 +58,6 @@ const CarProvider = ({ children }: { children: ReactNode }) => {
 				carritoLista,
 				addToCart,
 				removeFromCart,
-				updateQuantity,
 				clearCart,
 				fetchCartItems,
 				aumentar,

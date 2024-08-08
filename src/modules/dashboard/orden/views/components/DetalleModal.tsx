@@ -10,6 +10,7 @@ import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import Swal from 'sweetalert2';
 import useOrdenUpdate from '../../application/useOrdenUpdate';
+import LoadingTable from '@/core/components/loading/LoadingTable';
 export interface ModalDetalleRef {
 	openModal: (id?: number, dataOrden?: OrdenResponse) => void;
 	closeModal?: () => void;
@@ -21,7 +22,7 @@ const DetalleModal = forwardRef<ModalDetalleRef, ModalProps>((_, ref) => {
 	const [ordenData, setOrdenData] = useState<OrdenResponse>();
 	const [id, setId] = useState<number>();
 	const [subTotal, setSubTotal] = useState<number>();
-	const { data: ordenDetalle } = useDetalleOrden(Number(id));
+	const { data: ordenDetalle, isFetching } = useDetalleOrden(Number(id));
 	const { data: dataEstados } = useEstadoPedidoFindAll();
 	const { mutateAsync: mutateAsyncEdit } = useOrdenUpdate();
 
@@ -94,13 +95,14 @@ const DetalleModal = forwardRef<ModalDetalleRef, ModalProps>((_, ref) => {
 			});
 		}
 	}, [ordenData]);
+
 	useEffect(() => {
 		if (ordenDetalle != null) {
 			let total = 0;
-			ordenDetalle?.forEach(item => {
+			for (const item of ordenDetalle) {
 				const subtotal = item.cantidad * item.foodMenu.precio;
 				total += subtotal;
-			});
+			}
 
 			const subTotalFor: string = total.toFixed(2);
 
@@ -230,73 +232,78 @@ const DetalleModal = forwardRef<ModalDetalleRef, ModalProps>((_, ref) => {
 						</div>
 					</div>
 					<hr />
-					<Table responsive bordered hover size="sm" className="">
-						<thead className="text-center">
-							<tr className="bg-info text-white">
-								<th className="text-white">Descripcion</th>
-								<th className="text-white">Cantidad</th>
-								<th className="text-white">Precio</th>
-								<th className="text-white">Importe</th>
-							</tr>
-						</thead>
-						<tbody>
-							{ordenDetalle?.map((item, key) => (
-								<tr key={key}>
-									<td>
-										<img
-											src={item.imgFire}
-											className="img-fluid mx-3"
-											style={{ width: '45px', height: '45px' }}
-										/>
-										{item.foodMenu.nombre}
-									</td>
 
-									<td>{item.cantidad} </td>
+					{isFetching ? (
+						<LoadingTable />
+					) : (
+						<Table responsive bordered hover size="sm" className="">
+							<thead className="text-center">
+								<tr className="bg-info text-white">
+									<th className="text-white">Descripcion</th>
+									<th className="text-white">Cantidad</th>
+									<th className="text-white">Precio</th>
+									<th className="text-white">Importe</th>
+								</tr>
+							</thead>
+							<tbody>
+								{ordenDetalle?.map((item, key) => (
+									<tr key={key}>
+										<td>
+											<img
+												src={item.imgFire}
+												className="img-fluid mx-3"
+												style={{ width: '45px', height: '45px' }}
+											/>
+											{item.foodMenu.nombre}
+										</td>
+
+										<td>{item.cantidad} </td>
+										<td>
+											{item.foodMenu.precio.toLocaleString('es-PE', {
+												style: 'currency',
+												currency: 'PEN',
+											})}{' '}
+										</td>
+										<td>
+											{(item.foodMenu.precio * item.cantidad).toLocaleString('es-PE', {
+												style: 'currency',
+												currency: 'PEN',
+											})}
+										</td>
+									</tr>
+								))}
+								<tr>
+									<td></td>
+									<td></td>
+									<td className="fw-bold"> SubTotal</td>
 									<td>
-										{item.foodMenu.precio.toLocaleString('es-PE', {
-											style: 'currency',
-											currency: 'PEN',
-										})}{' '}
-									</td>
-									<td>
-										{(item.foodMenu.precio * item.cantidad).toLocaleString('es-PE', {
+										{subTotal?.toLocaleString('es-PE', {
 											style: 'currency',
 											currency: 'PEN',
 										})}
 									</td>
 								</tr>
-							))}
-							<tr>
-								<td></td>
-								<td></td>
-								<td className="fw-bold"> SubTotal</td>
-								<td>
-									{subTotal?.toLocaleString('es-PE', {
-										style: 'currency',
-										currency: 'PEN',
-									})}
-								</td>
-							</tr>
-							<tr>
-								<td></td>
+								<tr>
+									<td></td>
 
-								<td></td>
-								<td className="fw-bold">Delivery </td>
-								<td>{'S/ 6.00'}</td>
-							</tr>
-							<tr>
-								<td></td>
-								<td></td>
-								<td className="fw-bold">Total </td>
-								<td>
-									{((subTotal ?? 0) + 6.0).toLocaleString('es-PE', {
-										style: 'currency',
-										currency: 'PEN',
-									})}
-								</td>
-							</tr>
-						</tbody>
-					</Table>
+									<td></td>
+									<td className="fw-bold">Delivery </td>
+									<td>{'S/ 6.00'}</td>
+								</tr>
+								<tr>
+									<td></td>
+									<td></td>
+									<td className="fw-bold">Total </td>
+									<td>
+										{((subTotal ?? 0) + 6.0).toLocaleString('es-PE', {
+											style: 'currency',
+											currency: 'PEN',
+										})}
+									</td>
+								</tr>
+							</tbody>
+						</Table>
+					)}
 				</Modal.Body>
 				<Modal.Footer>
 					<Button variant="secondary" onClick={closeModal}>

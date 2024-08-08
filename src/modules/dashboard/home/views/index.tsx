@@ -10,6 +10,7 @@ import { OrdenFilter } from '../../orden/domain/OrdenFilter';
 import { UsuarioFilter } from '../../usuario/domain';
 import { useUsuarioPaginated } from '../../usuario/application';
 import { Link } from 'react-router-dom';
+import '@/layouts/views/templates/js/app.js';
 
 const index = () => {
 	const { data: dataCategoria } = useCategoriaFindAll();

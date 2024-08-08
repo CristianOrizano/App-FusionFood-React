@@ -25,8 +25,8 @@ const index = () => {
 		<>
 			<main className="page-wrapper">
 				<NavbarPage />
-				<div style={{ paddingTop: '100px', paddingBottom: '150px' }}>
-					<div className="container mt-5 mb-5">
+				<div style={{ paddingTop: '150px', paddingBottom: '150px' }}>
+					<div className="container ">
 						<h3 className="text-dark">Tu Orden</h3>
 						<div className="row ">
 							<div className="col-md-9 ">
